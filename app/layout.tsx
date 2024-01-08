@@ -2,10 +2,10 @@
 import "./globals.css";
 import "./data-tables-css.css";
 import "./satoshi.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Loader from "@/components/common/Loader";
-import SignIn from "./auth/signin/page";
-
+import SignIns from "./auth/signin/page";
+import { Authentication } from "@/service/auths/login";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
 
@@ -16,18 +16,23 @@ export default function RootLayout({
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [login, setLogin] = useState(false);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000);
   }, []);
 
-  const handleSignIn = () => {
-    setLogin(true);
-  };
-  const handleSignOut = () => {
-    setLogin(false);
-  };
+  useEffect(() => {
+    Authentication().onAuthStateChanged((user) => {
+      if (user) {
+        console.log("Sudah Masuk");
+        setLogin(true);
+      } else {
+        console.log("Belum ada akun");
+        setLogin(false);
+      }
+    });
+  }, []);
 
   return (
     <html lang="en">
@@ -51,7 +56,6 @@ export default function RootLayout({
                   <Header
                     sidebarOpen={sidebarOpen}
                     setSidebarOpen={setSidebarOpen}
-                    handleSignOut={handleSignOut}
                   />
                   {/* <!-- ===== Header End ===== --> */}
 
@@ -68,7 +72,7 @@ export default function RootLayout({
             )}
           </div>
         ) : (
-          <SignIn handleSignIn={handleSignIn} />
+          <SignIns />
         )}
       </body>
     </html>

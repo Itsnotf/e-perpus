@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { SignOut } from "@/service/auths/login";
 
-const DropdownUser = (props: { handleSignOut: any }) => {
+const DropdownUser = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef<any>(null);
@@ -158,7 +159,7 @@ const DropdownUser = (props: { handleSignOut: any }) => {
           </li>
         </ul> */}
         <button
-          onClick={props.handleSignOut}
+          onClick={SignOut}
           className="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base"
         >
           <svg

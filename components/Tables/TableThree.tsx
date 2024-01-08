@@ -2,9 +2,15 @@
 import { Package } from "@/types/package";
 import { useState, useEffect } from "react";
 import { packageData } from "@/types/package";
+import { db } from "@/service/firebase-sdk";
+import { collection, addDoc } from "firebase/firestore";
 
 const TableThree = () => {
   const [open, setOpen] = useState(false);
+
+  // async function addDataToFireStore(No_Hp:number , nama: string, buku,) {
+
+  // }
 
   const handleOpen = () => {
     setOpen(!false);

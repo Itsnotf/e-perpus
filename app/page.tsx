@@ -1,12 +1,11 @@
-import ECommerce from "@/components/Dashboard/E-commerce";
+"use client";
 import { Metadata } from "next";
 import CardDataStats from "@/components/CardDataStats";
 import TableThree from "@/components/Tables/TableThree";
 
 export const metadata: Metadata = {
   title: "E - PERPUS",
-  description: "This is Home Blog page for TailAdmin Next.js",
-  // other metadata
+  description: "This is dashboard",
 };
 
 export default function Home() {

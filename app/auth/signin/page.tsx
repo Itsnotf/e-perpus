@@ -1,15 +1,26 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import { Metadata } from "next";
-export const metadata: Metadata = {
-  title: "Signin Page | Next.js E-commerce Dashboard Template",
-  description: "This is Signin page for TailAdmin Next.js",
-  // other metadata
-};
+import { useForm } from "react-hook-form";
+import { SignIn, GetSignInErrorMessage } from "@/service/auths/login";
+import FormError from "@/components/Error";
 
-const SignIn = (props: { handleSignIn: any }) => {
+const SignIns = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (velues: any) => {
+    const { email, password } = velues;
+    try {
+      await SignIn(email, password);
+    } catch (error: any) {
+      const message = GetSignInErrorMessage(error.code);
+      console.log(message);
+    }
+  };
+
   return (
     <>
       <div className="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -170,13 +181,17 @@ const SignIn = (props: { handleSignIn: any }) => {
                 Sign In to TailAdmin
               </h2>
 
-              <form>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="mb-4">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
                     Email
                   </label>
+                  <FormError error={errors.email} />
                   <div className="relative">
                     <input
+                      {...register("email", { required: true })}
+                      id="email"
+                      name="email"
                       type="email"
                       placeholder="Enter your email"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -204,10 +219,13 @@ const SignIn = (props: { handleSignIn: any }) => {
 
                 <div className="mb-6">
                   <label className="mb-2.5 block font-medium text-black dark:text-white">
-                    Re-type Password
+                    Password
                   </label>
+                  <FormError error={errors.password} />
                   <div className="relative">
                     <input
+                      id="password"
+                      {...register("password", { required: true })}
                       type="password"
                       placeholder="6+ Characters, 1 Capital letter"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -239,7 +257,6 @@ const SignIn = (props: { handleSignIn: any }) => {
 
                 <div className="mb-5">
                   <input
-                    onClick={props.handleSignIn}
                     type="submit"
                     value="Sign In"
                     className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
@@ -300,4 +317,4 @@ const SignIn = (props: { handleSignIn: any }) => {
   );
 };
 
-export default SignIn;
+export default SignIns;
