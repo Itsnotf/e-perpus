@@ -1,48 +1,54 @@
 export type Package = {
-  name: string;
-  nim: number;
-  status: string;
-  tanggalPengembalian: Date;
-  tanggalPeminjaman: Date;
-  kodeBuku: number;
-  buku: string;
-};
+  nama: string
+  nim: string
+  kelas: string
+  status: string
+  tanggalPengembalian: Date
+  tanggalPeminjaman: Date
+  kodeBuku: string
+  namaBuku: string
+  idPeminjaman?: string
+}
 
-export const packageData = [
+export const packageData: Package[] = [
   {
-    name: "Muhammad Akbar Aditya",
-    status: "Selesai",
-    nim: 20393434,
+    nama: 'Muhammad Akbar Aditya',
+    status: 'Selesai',
+    nim: '20393434',
+    kelas: '3IA',
     tanggalPeminjaman: new Date(2004, 4, 2), // 2 Mei 2004
     tanggalPengembalian: new Date(2004, 4, 6), // 6 Mei 2004
-    kodeBuku: 1234,
-    buku: "Express Dasar",
+    kodeBuku: '1234',
+    namaBuku: 'Express Dasar',
   },
   {
-    name: "Faiz aflah Hafizuddin",
-    status: "Belum",
-    nim: 20393434,
+    nama: 'Faiz aflah Hafizuddin',
+    status: 'Belum',
+    nim: '20393434',
+    kelas: '3IA',
     tanggalPeminjaman: new Date(2004, 4, 2), // 2 Mei 2004
     tanggalPengembalian: new Date(2004, 4, 6), // 6 Mei 2004
-    kodeBuku: 1234,
-    buku: "Next Js Dasar",
+    kodeBuku: '1234',
+    namaBuku: 'Next Js Dasar',
   },
   {
-    name: "Fariz aflah Hariz Ibrahim",
-    status: "Selesai",
-    nim: 20393434,
+    nama: 'Fariz aflah Hariz Ibrahim',
+    status: 'Selesai',
+    nim: '20393434',
+    kelas: '3IA',
     tanggalPeminjaman: new Date(2004, 4, 2), // 2 Mei 2004
     tanggalPengembalian: new Date(2004, 4, 6), // 6 Mei 2004
-    kodeBuku: 1234,
-    buku: "Js Dasar",
+    kodeBuku: '1234',
+    namaBuku: 'Js Dasar',
   },
   {
-    name: "Amal Iksani",
-    status: "Belum",
-    nim: 20393434,
+    nama: 'Amal Iksani',
+    status: 'Belum',
+    nim: '20393434',
+    kelas: '3IA',
     tanggalPeminjaman: new Date(2004, 4, 2), // 2 Mei 2004
     tanggalPengembalian: new Date(2004, 4, 6), // 6 Mei 2004
-    kodeBuku: 1234,
-    buku: "Php Dasar",
+    kodeBuku: '1234',
+    namaBuku: 'Php Dasar',
   },
-];
+]

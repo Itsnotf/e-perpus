@@ -1,14 +1,14 @@
-import Breadcrumb from "@/components/Breadcrumbs/Breadcrumb";
-import TableOne from "@/components/Tables/TableOne";
-import TableThree from "@/components/Tables/TableThree";
-import TableTwo from "@/components/Tables/TableTwo";
+import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
+import TableOne from '@/components/Tables/TableOne'
+import TablePeminjaman from '@/components/Tables/TablePeminjaman'
+import TableTwo from '@/components/Tables/TableTwo'
 
-import { Metadata } from "next";
+import { Metadata } from 'next'
 export const metadata: Metadata = {
-  title: "Tables Page | Next.js E-commerce Dashboard Template",
-  description: "This is Tables page for TailAdmin Next.js",
+  title: 'Tables Page | Next.js E-commerce Dashboard Template',
+  description: 'This is Tables page for TailAdmin Next.js',
   // other metadata
-};
+}
 
 const TablesPage = () => {
   return (
@@ -18,10 +18,10 @@ const TablesPage = () => {
       <div className="flex flex-col gap-10">
         <TableOne />
         <TableTwo />
-        <TableThree />
+        <TablePeminjaman />
       </div>
     </>
-  );
-};
+  )
+}
 
-export default TablesPage;
+export default TablesPage

@@ -1,12 +1,15 @@
 'use client'
 import usePengembalianState from '@/hooks/usePengembalianState'
+import useStatisticState from '@/hooks/useStatisticState'
+import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
 import axios from 'axios'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
-function TablePengembalian() {
+const TableDenda = () => {
   const [open, setOpen] = useState(false)
   const packageState = usePengembalianState()
-  console.log({ packageState })
+  const statisticState = useStatisticState()
+  console.log({ statisticState })
 
   const handleOpen = () => {
     setOpen(!false)
@@ -63,7 +66,7 @@ function TablePengembalian() {
                 Nama
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
-                Kode Buku
+                Denda
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Buku
@@ -75,75 +78,95 @@ function TablePengembalian() {
                 Status
               </th>
               {/* <th className="min-w-[120px] py-4 px-4 font-medium text-black dark:text-white">
-                Status
-              </th> */}
+                    Status
+                  </th> */}
               <th className="py-4 px-4 font-medium text-black dark:text-white">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody>
-            {packageState?.data?.map((packageItem, key) => (
-              <tr key={key}>
-                <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
-                  <h5 className="font-medium text-black dark:text-white">
-                    {packageItem.nim}
-                  </h5>
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {packageItem.nama}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {packageItem.kodeBuku}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {packageItem.namaBuku}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p className="text-black dark:text-white">
-                    {packageItem.tanggalPengembalian.toLocaleDateString(
-                      'id-ID',
-                    )}
-                  </p>
-                </td>
+            {packageState?.data?.map((packageItem, key) => {
+              let denda = 0
+              if (new Date() > packageItem.tanggalPengembalian) {
+                const jarakTanggalPengembalian = calculateDateDifference(
+                  packageItem.tanggalPengembalian,
+                  new Date(),
+                )
 
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p
-                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                      packageItem.status === 'selesai'
-                        ? 'text-success bg-success'
-                        : packageItem.status === 'belum'
-                        ? 'text-danger bg-danger'
-                        : 'text-warning bg-warning'
-                    }`}
-                  >
-                    {packageItem.status}
-                  </p>
-                </td>
-                <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <div className="flex items-center space-x-3.5">
-                    <button
-                      disabled={packageItem.status === 'selesai'}
-                      onClick={() => handleSubmit(packageItem.idPeminjaman)}
-                      className={`flex justify-center rounded ${
-                        packageItem.status === 'selesai'
-                          ? 'bg-gray border-primary text-primary'
-                          : 'bg-primary'
-                      } p-3 font-medium border text-gray 
-                      transition-colors focus:border-primary focus:border focus:bg-gray focus:text-primary`}
-                    >
-                      Restore
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+                if (jarakTanggalPengembalian === 0) return
+
+                if (
+                  jarakTanggalPengembalian < 10 &&
+                  jarakTanggalPengembalian > 0
+                ) {
+                  denda = jarakTanggalPengembalian * 1000
+                } else {
+                  denda = 10000
+                }
+
+                return (
+                  <tr key={key}>
+                    <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {packageItem.nim}
+                      </h5>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="text-black dark:text-white">
+                        {packageItem.nama}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="text-black dark:text-white">{denda}</p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="text-black dark:text-white">
+                        {packageItem.namaBuku}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p className="text-black dark:text-white">
+                        {packageItem.tanggalPengembalian.toLocaleDateString(
+                          'id-ID',
+                        )}
+                      </p>
+                    </td>
+
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <p
+                        className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
+                          packageItem.status === 'selesai'
+                            ? 'text-success bg-success'
+                            : packageItem.status === 'belum'
+                            ? 'text-danger bg-danger'
+                            : 'text-warning bg-warning'
+                        }`}
+                      >
+                        {packageItem.status}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
+                      <div className="flex items-center space-x-3.5">
+                        <button
+                          onClick={() => handleSubmit(packageItem.idPeminjaman)}
+                          className={`flex justify-center rounded ${
+                            packageItem.status === 'selesai'
+                              ? 'bg-gray border-primary text-primary'
+                              : 'bg-primary'
+                          } p-3 font-medium border text-gray 
+                          transition-colors focus:border-primary focus:border focus:bg-gray focus:text-primary`}
+                        >
+                          Restore
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              } else {
+                return
+              }
+            })}
           </tbody>
         </table>
       </div>
@@ -193,10 +216,7 @@ function TablePengembalian() {
                 </div>
 
                 <div className="flex flex-row justify-end gap-5">
-                  <button
-                    // onClick={handleSubmit}
-                    className="flex  justify-center rounded bg-primary p-3 font-medium border text-gray transition-colors focus:border-primary focus:border focus:bg-gray focus:text-primary"
-                  >
+                  <button className="flex  justify-center rounded bg-primary p-3 font-medium border text-gray transition-colors focus:border-primary focus:border focus:bg-gray focus:text-primary">
                     Submit
                   </button>
                   <button
@@ -215,4 +235,4 @@ function TablePengembalian() {
   )
 }
 
-export default TablePengembalian
+export default TableDenda
