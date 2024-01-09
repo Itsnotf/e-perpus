@@ -1,18 +1,14 @@
-import { FirebaseApp } from 'firebase/app'
 import { db } from '../firebase-sdk'
+import { collection, deleteDoc, doc, getDoc, getDocs } from 'firebase/firestore'
+import { getDataAnggota, hapusAnggota } from './anggota'
+import { getDataBuku, hapusBuku } from './buku'
 import {
-  DocumentData,
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore'
-import { PeminjamanBody } from '@/types/request'
-import { getDataAnggota } from './anggota'
-import { getDataBuku } from './buku'
+  deletePengembalianById,
+  deletePengembalianByPeminjamanId,
+  getDataPengembalian,
+  getDataPengembalianById,
+  getDataPengembalianByIdPeminjaman,
+} from './pengembalian'
 
 export async function getDataPeminjaman() {
   try {
@@ -68,6 +64,29 @@ export async function getDataPeminjamanById(idPeminjaman: string) {
     }
   } catch (error) {
     console.error('Error fetching peminjaman data:', error)
+    throw error
+  }
+}
+
+export async function deleteDataPeminjaman(idPeminjaman: string) {
+  try {
+    const dataPeminjaman = await getDataPeminjaman()
+
+    dataPeminjaman.map(async (doc) => {
+      if (doc.idPeminjaman === idPeminjaman) {
+        await hapusBuku(doc.kodeBuku)
+        await hapusAnggota(doc.idAnggota)
+        await deletePengembalianByPeminjamanId(idPeminjaman)
+      }
+    })
+
+    const peminjamanDocRef = doc(db, 'peminjaman', idPeminjaman)
+    await deleteDoc(peminjamanDocRef)
+
+    console.log('Peminjaman deleted successfully.')
+    console.log({ peminjamanDocRef, idPeminjaman })
+  } catch (error) {
+    console.error('Error deleting peminjaman:', error)
     throw error
   }
 }

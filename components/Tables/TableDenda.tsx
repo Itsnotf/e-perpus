@@ -6,11 +6,12 @@ import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
 const TableDenda = () => {
+  // State
   const [open, setOpen] = useState(false)
   const packageState = usePengembalianState()
   const statisticState = useStatisticState()
-  console.log({ statisticState })
 
+  // handler
   const handleOpen = () => {
     setOpen(!false)
   }

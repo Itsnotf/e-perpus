@@ -4,10 +4,11 @@ import axios from 'axios'
 import { useState } from 'react'
 
 function TablePengembalian() {
+  // state
   const [open, setOpen] = useState(false)
   const packageState = usePengembalianState()
-  console.log({ packageState })
 
+  // handler
   const handleOpen = () => {
     setOpen(!false)
   }

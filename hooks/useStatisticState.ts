@@ -19,8 +19,14 @@ const useStatisticState = create<State & Actions>((set, get) => ({
   jumlahBukuBelumDikembalikan: 0,
   denda: 0,
   setData: (newData) => set(newData),
-  addDenda: (newDenda) => set((state) => ({ denda: state.denda + newDenda })),
+  addDenda: (newDenda) => {
+    const currentDenda = get().denda
+    const updatedData = newDenda + currentDenda
+    set({ denda: updatedData })
+  },
   resetDenda: () => set(() => ({ denda: 0 })),
 }))
+
+export type TStatisticState = State & Actions
 
 export default useStatisticState

@@ -1,4 +1,8 @@
-import { getDataPeminjaman } from '@/service/data/peminjaman'
+import {
+  deleteDataPeminjaman,
+  getDataPeminjaman,
+  getDataPeminjamanById,
+} from '@/service/data/peminjaman'
 import { addPengembalian } from '@/service/data/pengembalian'
 import { db } from '@/service/firebase-sdk'
 import { ApiResponse, PeminjamanBody } from '@/types/request'
@@ -51,6 +55,41 @@ export async function POST(request: Request) {
       })
     }
 
+    let error_response = {
+      status: 'error',
+      message: error.message,
+    }
+    return new NextResponse(JSON.stringify(error_response), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    const { idPeminjaman } = await request.json()
+    if (!idPeminjaman) {
+      return new NextResponse(
+        JSON.stringify({ status: 'fail', message: 'Loan ID is required' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      )
+    }
+
+    const response = await deleteDataPeminjaman(idPeminjaman)
+
+    let json_response = {
+      status: 'success',
+      message: response,
+    }
+    return new NextResponse(JSON.stringify(json_response), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    })
+  } catch (error:any) {
     let error_response = {
       status: 'error',
       message: error.message,

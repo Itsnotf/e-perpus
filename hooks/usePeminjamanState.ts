@@ -8,6 +8,7 @@ interface State {
 interface Actions {
   setData: (data: Package[]) => void
   addData: (newData: Package) => void
+  deleteData: (idPeminjaman: string) => void
 }
 
 const usePeminjamanState = create<State & Actions>((set, get) => ({
@@ -18,6 +19,15 @@ const usePeminjamanState = create<State & Actions>((set, get) => ({
     const updatedData = [newData, ...currentData]
     set({ data: updatedData })
   },
+  deleteData: (idPeminjaman) => {
+    const currentData = get().data
+    const updatedData = currentData.filter(
+      (item) => item.idPeminjaman !== idPeminjaman,
+    )
+    set({ data: updatedData })
+  },
 }))
+
+export type TPeminjamanState =  State & Actions 
 
 export default usePeminjamanState

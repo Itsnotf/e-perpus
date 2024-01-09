@@ -1,25 +1,29 @@
-import React from "react";
-import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { SignIn, GetSignInErrorMessage } from "@/service/auths/login";
-import FormError from "@/components/Error";
+import React from 'react'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import {
+  SignIn,
+  GetSignInErrorMessage,
+  SignInWithGoogle,
+} from '@/service/auths/login'
+import FormError from '@/components/Error'
 
 const SignIns = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = useForm()
 
   const onSubmit = async (velues: any) => {
-    const { email, password } = velues;
+    const { email, password } = velues
     try {
-      await SignIn(email, password);
-    } catch (error: any) {
-      const message = GetSignInErrorMessage(error.code);
-      console.log(message);
+      await SignIn(email, password)
+    } catch (error:any) {
+      const message = GetSignInErrorMessage(error.code)
+      console.log(message)
     }
-  };
+  }
 
   return (
     <>
@@ -189,7 +193,7 @@ const SignIns = () => {
                   <FormError error={errors.email} />
                   <div className="relative">
                     <input
-                      {...register("email", { required: true })}
+                      {...register('email', { required: true })}
                       id="email"
                       name="email"
                       type="email"
@@ -225,7 +229,7 @@ const SignIns = () => {
                   <div className="relative">
                     <input
                       id="password"
-                      {...register("password", { required: true })}
+                      {...register('password', { required: true })}
                       type="password"
                       placeholder="6+ Characters, 1 Capital letter"
                       className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -302,7 +306,7 @@ const SignIns = () => {
 
                 <div className="mt-6 text-center">
                   <p>
-                    Don’t have any account?{" "}
+                    Don’t have any account?{' '}
                     <Link href="/auth/signup" className="text-primary">
                       Sign Up
                     </Link>
@@ -314,7 +318,7 @@ const SignIns = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default SignIns;
+export default SignIns

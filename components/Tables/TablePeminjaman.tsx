@@ -7,37 +7,22 @@ import usePeminjamanState from '@/hooks/usePeminjamanState'
 import usePengembalianState from '@/hooks/usePengembalianState'
 import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
 import useStatisticState from '@/hooks/useStatisticState'
+import useInitStates from '@/hooks/useInitStates'
+import { hitungDenda } from '@/utils/hitungDenda'
 
 const TableThree = () => {
+  // State
   const [open, setOpen] = useState(false)
   const peminjamanState = usePeminjamanState()
   const pengembalianState = usePengembalianState()
-
   const statisticState = useStatisticState()
 
   useEffect(() => {
-    statisticState.resetDenda()
-
-    peminjamanState.data.map((item) => {
-      if (new Date() > item.tanggalPengembalian) {
-        const jarakTanggalPengembalian = calculateDateDifference(
-          item.tanggalPengembalian,
-          new Date(),
-        )
-
-        if (jarakTanggalPengembalian === 0) return
-
-        if (jarakTanggalPengembalian < 10 && jarakTanggalPengembalian > 0) {
-          statisticState.addDenda(jarakTanggalPengembalian * 1000)
-        } else {
-          statisticState.addDenda(10000)
-        }
-      }
-    })
+    hitungDenda(peminjamanState, statisticState)
   }, [])
 
+  // Ref
   type PaketTanpaTanggalPengembalian = Omit<Package, 'tanggalPeminjaman'>
-
   const inputRefs = useRef<PaketTanpaTanggalPengembalian>({
     nama: '',
     nim: '',
@@ -48,12 +33,41 @@ const TableThree = () => {
     tanggalPengembalian: new Date(),
   })
 
+  // handler
   const handleOpen = () => {
     setOpen(!false)
   }
 
   const handleClose = () => {
     setOpen(false)
+  }
+
+  const handleDelete = async (packageItem: Package) => {
+    try {
+      if (!confirm('Apakah anda yakin mau menghapus data peminjaman ini?'))
+        return
+
+      const response = await axios.delete(`/api/peminjaman`, {
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          idPeminjaman: packageItem?.idPeminjaman,
+        },
+      })
+
+      peminjamanState.deleteData(packageItem?.idPeminjaman as string)
+      pengembalianState.deleteData(packageItem?.idPeminjaman as string)
+
+      useInitStates({ peminjamanState, pengembalianState, statisticState })
+      hitungDenda(peminjamanState, statisticState)
+
+      // location.reload()
+
+      console.log(response.data)
+      console.log('Data success deleted')
+    } catch (error:any) {
+      console.error('Error:', error.response?.data || error?.message)
+      console.log('Data failed delete')
+    }
   }
 
   const handleSubmit = async () => {
@@ -96,7 +110,10 @@ const TableThree = () => {
       pengembalianState.addData(formData)
       console.log('Data successfully submitted to API:', response.data)
 
-      // bug button ga mau diklik, untuk sementara di refresh aja
+      // ! bug button ga mau diklik, untuk sementara di refresh aja
+      useInitStates({ peminjamanState, pengembalianState, statisticState })
+      hitungDenda(peminjamanState, statisticState)
+
       location.reload()
     } catch (error) {
       console.error('Error submitting data to API:', error)
@@ -211,7 +228,12 @@ const TableThree = () => {
                           />
                         </svg>
                       </button>
-                      <button className="hover:text-primary">
+                      <button
+                        className="hover:text-primary"
+                        onClick={async () => {
+                          handleDelete(packageItem)
+                        }}
+                      >
                         <svg
                           className="fill-current"
                           width="18"
@@ -267,7 +289,7 @@ const TableThree = () => {
       </div>
 
       {open && (
-        <form action="">
+        <div>
           <div className="fixed inset-0 bg-black bg-opacity-25 backdrop-blur-sm flex flex-col justify-center items-center  ">
             <div className="ml-67 overflow-y-auto mt-25 h-[55%] w-[60%] rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div className="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -392,8 +414,7 @@ const TableThree = () => {
 
                 <div className="flex flex-row justify-end gap-5">
                   <button
-                    onClick={(event) => {
-                      event.preventDefault()
+                    onClick={() => {
                       handleSubmit()
                     }}
                     className="flex w-[10%] justify-center rounded bg-primary p-3 font-medium border text-gray transition-colors focus:border-primary focus:border focus:bg-gray focus:text-primary"
@@ -410,7 +431,7 @@ const TableThree = () => {
               </div>
             </div>
           </div>
-        </form>
+        </div>
       )}
     </div>
   )

@@ -1,40 +1,47 @@
-import { firebaseApp } from "../firebase-sdk";
-import { getApps } from "firebase/app";
+import { firebaseApp } from '../firebase-sdk'
+import { getApps } from 'firebase/app'
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-} from "firebase/auth";
+  signInWithPopup,
+} from 'firebase/auth'
+import { GoogleAuthProvider } from 'firebase/auth/cordova'
 
 if (!getApps().length) {
-  firebaseApp;
+  firebaseApp
 }
 
-const FirebaseAuth = getAuth();
+const FirebaseAuth = getAuth()
 
 export const Authentication = () => {
-  return FirebaseAuth;
-};
+  return FirebaseAuth
+}
 
 export const SignUp = async (email: string, password: string) => {
-  await createUserWithEmailAndPassword(FirebaseAuth, email, password);
-};
+  await createUserWithEmailAndPassword(FirebaseAuth, email, password)
+}
 
 export const SignIn = async (email: string, password: string) => {
-  await signInWithEmailAndPassword(FirebaseAuth, email, password);
-};
+  await signInWithEmailAndPassword(FirebaseAuth, email, password)
+}
+
+export const SignInWithGoogle = async () => {
+  const provider = new GoogleAuthProvider()
+  await signInWithPopup(FirebaseAuth, provider)
+}
 
 export const SignOut = async () => {
-  await signOut(FirebaseAuth);
-};
+  await signOut(FirebaseAuth)
+}
 
 export const GetSignInErrorMessage = (code: any) => {
   switch (code) {
-    case "auth/user-not-found":
-      return "Email Tidak Ditemukan";
-    case "auth/wrong-password":
+    case 'auth/user-not-found':
+      return 'Email Tidak Ditemukan'
+    case 'auth/wrong-password':
     default:
-      return "Email atau Password Salah";
+      return 'Email atau Password Salah'
   }
-};
+}

@@ -2,7 +2,7 @@
 import './globals.css'
 import './data-tables-css.css'
 import './satoshi.css'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Loader from '@/components/common/Loader'
 import SignIns from './auth/signin/page'
 import { Authentication } from '@/service/auths/login'
@@ -10,7 +10,6 @@ import Sidebar from '@/components/Sidebar'
 import Header from '@/components/Header'
 import { Package } from '@/types/package'
 import { ApiResponse } from '@/types/request'
-import { TResponseGetPeminjaman } from '@/types/peminjaman'
 import usePeminjamanState from '@/hooks/usePeminjamanState'
 import {
   convertGetPeminjaman,
@@ -18,24 +17,33 @@ import {
 } from '@/utils/convertApiResponse'
 import usePengembalianState from '@/hooks/usePengembalianState'
 import useStatisticState from '@/hooks/useStatisticState'
-import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
+import useInitStates from '@/hooks/useInitStates'
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  // state
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [login, setLogin] = useState(false)
   const [loading, setLoading] = useState(true)
+
+  // costume state hooks dengan zustand
   const peminjamanState = usePeminjamanState()
   const pengembalianState = usePengembalianState()
   const statisticState = useStatisticState()
 
+  // init
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000)
   }, [])
 
+  useEffect(() => {
+    useInitStates({ peminjamanState, pengembalianState, statisticState })
+  }, [])
+
+  // auth
   useEffect(() => {
     Authentication().onAuthStateChanged((user) => {
       if (user) {
@@ -46,50 +54,6 @@ export default function RootLayout({
         setLogin(false)
       }
     })
-  }, [])
-
-  // init peminjaman data
-  useEffect(() => {
-    ;(async () => {
-      const response: ApiResponse = await (
-        await fetch('/api/peminjaman')
-      ).json()
-
-      const convertedObjects: Package[] = convertGetPeminjaman(response)
-
-      peminjamanState.setData(convertedObjects)
-    })()
-  }, [])
-
-  // init pengembalian data
-  useEffect(() => {
-    ;(async () => {
-      const response: ApiResponse = await (
-        await fetch('/api/pengembalian')
-      ).json()
-
-      const convertedObjects: Package[] = convertGetPengembalian(response)
-      pengembalianState.setData(convertedObjects)
-    })()
-  }, [])
-
-  // init pengembalian data
-  useEffect(() => {
-    ;(async () => {
-      const response: ApiResponse | any = await (
-        await fetch('/api/statistic')
-      ).json()
-
-      const data = {
-        jumlahPeminjam: response.data.anggota,
-        jumlahBukuDikembalikan: response.data.bukuDikembalikan,
-        jumlahBukuBelumDikembalikan: response.data.bukuBelumDikembalikan,
-        denda: statisticState.denda,
-      }
-      console.log({ data })
-
-      statisticState.setData(data)
-    })()
   }, [])
 
   return (

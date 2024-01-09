@@ -4,10 +4,11 @@ import { create } from 'zustand'
 interface State {
   data: Package[]
 }
-
+ 
 interface Actions {
   setData: (data: Package[]) => void
   addData: (newData: Package) => void
+  deleteData: (idPeminjaman: string) => void
 }
 
 const usePengembalianState = create<State & Actions>((set, get) => ({
@@ -18,6 +19,15 @@ const usePengembalianState = create<State & Actions>((set, get) => ({
     const updatedData = [newData, ...currentData]
     set({ data: updatedData })
   },
+  deleteData: (idPeminjaman) => {
+    const currentData = get().data
+    const updatedData = currentData.filter(
+      (item) => item.idPeminjaman !== idPeminjaman,
+    )
+    set({ data: updatedData })
+  },
 }))
+
+export type TPengembalianState = State & Actions
 
 export default usePengembalianState
