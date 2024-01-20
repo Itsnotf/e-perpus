@@ -1,13 +1,13 @@
 import React from 'react'
 import Breadcrumb from '@/components/Breadcrumbs/Breadcrumb'
-import TablePengguna from '@/components/Tables/TablePengguna'
+import TableAnggota from '@/components/Tables/TableAnggota'
 
 export default function buku() {
   return (
     <>
-      <Breadcrumb pageName="Peminjaman" />
+      <Breadcrumb pageName="Pengguna" />
       <div>
-        <TablePengguna />
+        <TableAnggota />
       </div>
     </>
   )
