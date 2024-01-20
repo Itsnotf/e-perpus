@@ -19,3 +19,10 @@ export type TResponseGetPengembalian = {
   denda: number
   tanggalPengembalian: Date
 }
+
+export interface TPengembalian {
+  idPeminjaman: string
+  denda: number
+  status: 'selesai' | 'belum'
+  tanggalPengembalian: Date
+}

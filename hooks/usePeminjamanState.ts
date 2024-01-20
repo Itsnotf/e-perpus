@@ -28,6 +28,6 @@ const usePeminjamanState = create<State & Actions>((set, get) => ({
   },
 }))
 
-export type TPeminjamanState =  State & Actions 
+export type TPeminjamanState = State & Actions
 
 export default usePeminjamanState

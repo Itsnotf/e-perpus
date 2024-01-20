@@ -5,13 +5,32 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
+  getDocs,
 } from 'firebase/firestore'
 import { db } from '../firebase-sdk'
+import { TBuku } from '@/types/buku'
 
 // const dataBuku = {
 //   nama: 'John Doe',
 //   // sesuaikan sesuai kebutuhan
 // };
+
+export async function getDataBukuAll() {
+  try {
+    const bukuCollectionRef = collection(db, 'buku')
+    const bukuSnapshot = await getDocs(bukuCollectionRef)
+
+    const bukuData: any = []
+    bukuSnapshot.forEach((doc) => {
+      bukuData.push({ idBuku: doc.id, ...doc.data() })
+    })
+
+    return bukuData
+  } catch (error) {
+    console.error('Error fetching all buku data:', error)
+    throw error
+  }
+}
 
 export async function getDataBuku(kodeBuku: string) {
   try {
@@ -19,7 +38,7 @@ export async function getDataBuku(kodeBuku: string) {
     const bukuSnapshot = await getDoc(bukuDocRef)
 
     if (bukuSnapshot.exists()) {
-      return bukuSnapshot.data()
+      return { idBuku: bukuSnapshot.id, ...bukuSnapshot.data() }
     } else {
       return null
     }
@@ -29,7 +48,7 @@ export async function getDataBuku(kodeBuku: string) {
   }
 }
 
-export async function tambahBuku(dataBuku: any) {
+export async function tambahBuku(dataBuku: TBuku) {
   try {
     const bukuCollectionRef = collection(db, 'buku')
     const newBukuRef = await addDoc(bukuCollectionRef, dataBuku)
@@ -53,9 +72,9 @@ export async function ubahBuku(kodeBuku: string, dataBuku: any) {
   }
 }
 
-export async function hapusBuku(kodeBuku: string) {
+export async function hapusBuku(idBuku: string) {
   try {
-    const bukuDocRef = doc(db, 'buku', kodeBuku)
+    const bukuDocRef = doc(db, 'buku', idBuku)
     await deleteDoc(bukuDocRef)
 
     console.log('Buku berhasil dihapus')

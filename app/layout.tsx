@@ -18,6 +18,7 @@ import {
 import usePengembalianState from '@/hooks/usePengembalianState'
 import useStatisticState from '@/hooks/useStatisticState'
 import useInitStates from '@/hooks/useInitStates'
+import useBukuState from '@/hooks/useBukuState'
 
 export default function RootLayout({
   children,
@@ -33,6 +34,9 @@ export default function RootLayout({
   const peminjamanState = usePeminjamanState()
   const pengembalianState = usePengembalianState()
   const statisticState = useStatisticState()
+  const bukuState = useBukuState()
+
+  console.log({ bukuState: bukuState.data })
 
   // init
   useEffect(() => {
@@ -40,7 +44,12 @@ export default function RootLayout({
   }, [])
 
   useEffect(() => {
-    useInitStates({ peminjamanState, pengembalianState, statisticState })
+    useInitStates({
+      bukuState,
+      peminjamanState,
+      pengembalianState,
+      statisticState,
+    })
   }, [])
 
   // auth

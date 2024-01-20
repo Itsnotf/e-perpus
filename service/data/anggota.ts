@@ -5,13 +5,32 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
+  getDocs,
 } from 'firebase/firestore'
 import { db } from '../firebase-sdk'
+import { TAnggota } from '@/types/anggota'
 
 // const dataAnggota = {
 //   nama: 'John Doe',
 //   // sesuaikan sesuai kebutuhan
 // };
+
+export async function getDataAnggotaAll() {
+  try {
+    const anggotaCollectionRef = collection(db, 'anggota')
+    const anggotaSnapshot = await getDocs(anggotaCollectionRef)
+
+    const anggotaData: any = []
+    anggotaSnapshot.forEach((doc) => {
+      anggotaData.push({ id: doc.id, ...doc.data() })
+    })
+
+    return anggotaData
+  } catch (error) {
+    console.error('Error fetching all anggota data:', error)
+    throw error
+  }
+}
 
 export async function getDataAnggota(idAnggota: string) {
   try {
@@ -21,7 +40,7 @@ export async function getDataAnggota(idAnggota: string) {
     if (anggotaSnapshot.exists()) {
       return anggotaSnapshot.data()
     } else {
-      return null
+      throw 'Data not found'
     }
   } catch (error) {
     console.error('Error fetching anggota data:', error)
@@ -29,7 +48,7 @@ export async function getDataAnggota(idAnggota: string) {
   }
 }
 
-export async function tambahAnggota(dataAnggota: any) {
+export async function tambahAnggota(dataAnggota: TAnggota) {
   try {
     const anggotaCollectionRef = collection(db, 'anggota')
     const newAnggotaRef = await addDoc(anggotaCollectionRef, dataAnggota)

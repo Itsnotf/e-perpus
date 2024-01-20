@@ -8,14 +8,18 @@ import { TPengembalianState } from './usePengembalianState'
 import { TStatisticState } from './useStatisticState'
 import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
 import { hitungDenda } from '@/utils/hitungDenda'
+import { TBukuState } from './useBukuState'
+import { TBuku } from '@/types/buku'
 
 type Props = {
+  bukuState: TBukuState
   peminjamanState: TPeminjamanState
   pengembalianState: TPengembalianState
   statisticState: TStatisticState
 }
 
 const useInitStates = ({
+  bukuState,
   peminjamanState,
   pengembalianState,
   statisticState,
@@ -23,14 +27,20 @@ const useInitStates = ({
   const fetchData = async () => {
     try {
       const [
+        bukuResponse,
         peminjamanResponse,
         pengembalianResponse,
         statisticResponse,
       ] = await Promise.all([
+        fetch('/api/buku/read/all').then((res) => res.json()),
         fetch('/api/peminjaman').then((res) => res.json()),
         fetch('/api/pengembalian').then((res) => res.json()),
         fetch('/api/statistic').then((res) => res.json()),
       ])
+
+      console.log({ bukuResponse })
+
+      bukuState.setData(bukuResponse?.data as TBuku[])
 
       const convertedPeminjaman = convertGetPeminjaman(peminjamanResponse)
       peminjamanState.setData(convertedPeminjaman)

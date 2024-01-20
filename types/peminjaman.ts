@@ -14,3 +14,10 @@ export type TResponseGetPeminjaman = {
   tanggalPeminjaman: Date
   tanggalPengembalian: Date
 }
+
+export interface TPeminjaman {
+  idAnggota: string
+  kodeBuku: string
+  tanggalPeminjaman: Date
+  tanggalPengembalian: Date
+}
