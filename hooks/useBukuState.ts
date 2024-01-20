@@ -8,7 +8,7 @@ interface State {
 interface Actions {
   setData: (data: TBuku[]) => void
   addData: (newData: TBuku) => void
-  deleteData: (kodeBuku: string) => void
+  deleteData: (idBuku: string) => void
 }
 
 const useBukuState = create<State & Actions>((set, get) => ({
@@ -19,9 +19,9 @@ const useBukuState = create<State & Actions>((set, get) => ({
     const updatedData = [newData, ...currentData]
     set({ data: updatedData })
   },
-  deleteData: (kodeBuku) => {
+  deleteData: (idBuku) => {
     const currentData = get().data
-    const updatedData = currentData.filter((item) => item.kodeBuku !== kodeBuku)
+    const updatedData = currentData.filter((item) => item.idBuku !== idBuku)
     set({ data: updatedData })
   },
 }))

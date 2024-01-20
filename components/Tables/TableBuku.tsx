@@ -109,7 +109,13 @@ const TableBuku = () => {
         })
 
         // update state
-        // bukuState.addData(input)
+        const updatedData: TBuku[] = bukuState.data.map((buku) =>
+          buku.idBuku === input.idBuku ? input : buku,
+        )
+
+        console.log({ updatedData })
+
+        bukuState.setData(updatedData)
         // pengembalianState.addData(formData)
         console.log('Data successfully submitted to API:', response.data)
 
