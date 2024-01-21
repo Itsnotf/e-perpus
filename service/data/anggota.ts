@@ -22,7 +22,7 @@ export async function getDataAnggotaAll() {
 
     const anggotaData: any = []
     anggotaSnapshot.forEach((doc) => {
-      anggotaData.push({ id: doc.id, ...doc.data() })
+      anggotaData.push({ idAnggota: doc.id, ...doc.data() })
     })
 
     return anggotaData

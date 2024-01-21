@@ -1,5 +1,5 @@
 export interface TAnggota {
-  kodeAnggota: string
+  idAnggota: string
   nis: string
   nama: string
   hp: string

@@ -5,7 +5,7 @@ import TableAnggota from '@/components/Tables/TableAnggota'
 export default function buku() {
   return (
     <>
-      <Breadcrumb pageName="Pengguna" />
+      <Breadcrumb pageName="Anggota" />
       <div>
         <TableAnggota />
       </div>

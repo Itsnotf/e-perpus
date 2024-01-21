@@ -57,14 +57,14 @@ const TableThree = () => {
       peminjamanState.deleteData(packageItem?.idPeminjaman as string)
       pengembalianState.deleteData(packageItem?.idPeminjaman as string)
 
-      useInitStates({ peminjamanState, pengembalianState, statisticState })
+      // useInitStates({ peminjamanState, pengembalianState, statisticState })
       hitungDenda(peminjamanState, statisticState)
 
       // location.reload()
 
       console.log(response.data)
       console.log('Data success deleted')
-    } catch (error:any) {
+    } catch (error) {
       console.error('Error:', error.response?.data || error?.message)
       console.log('Data failed delete')
     }
@@ -111,7 +111,7 @@ const TableThree = () => {
       console.log('Data successfully submitted to API:', response.data)
 
       // ! bug button ga mau diklik, untuk sementara di refresh aja
-      useInitStates({ peminjamanState, pengembalianState, statisticState })
+      // useInitStates({ peminjamanState, pengembalianState, statisticState })
       hitungDenda(peminjamanState, statisticState)
 
       location.reload()

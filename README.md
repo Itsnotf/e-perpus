@@ -1,88 +1,212 @@
-# TailAdmin Next.js - Free Next.js Tailwind Admin Dashboard Template
-
-TailAdmin is a free and open-source admin dashboard template built on **Next.js and Tailwind CSS** providing developers with everything they need to create a feature-rich and data-driven: back-end, dashboard, or admin panel solution for any sort of web project.
+# E-PERPUS
 
 [![tailwind nextjs admin template](https://github.com/TailAdmin/free-nextjs-admin-dashboard/blob/main/tailadmin-nextjs.jpg)](https://nextjs-demo.tailadmin.com/)
 
-With TailAdmin Next.js, you get access to all the necessary dashboard UI components, elements, and pages required to build a high-quality and complete dashboard or admin panel. Whether you're building a dashboard or admin panel for a complex web application or a simple website. 
+## Template ENV 🌐
 
-TailAdmin utilizes the powerful features of **Next.js 13** and common features of Next.js such as server-side rendering (SSR), static site generation (SSG), and seamless API route integration. Combined with the advancements of **React 18** and the robustness of **TypeScript**, TailAdmin is the perfect solution to help get your project up and running quickly.
+# Setup ⚙️
 
-### [✨ Visit Website](https://tailadmin.com/)
-### [🚀 PRO Demo](https://nextjs-demo.tailadmin.com/)
-### [🚀 FREE Demo](https://nextjs-free-demo.tailadmin.com/)
-
-### TailAdmin Next.js PRO vs TailAdmin Next.js FREE Comparison 📊
-
-#### [TailAdmin Next.js PRO](https://nextjs-demo.tailadmin.com/)
-- 4 Unique Dashboards: Analytics, Ecommerce, Marketing, and CRM (More will be added)
-- 120+ Dashboard UI Components
-- 200+ Total UI Elements
-- 45+ HTML Files
-- All Essential Elements and Files
-- Full Figma Design Source - As Shown on Demo
-___
-
-#### [TailAdmin Next.js FREE](https://free-nextjs-demo.tailadmin.com/)
-- 1 Unique Dashboard
-- 30+ Dashboard UI Components
-- 50+ Total UI Elements 
-- 10+ HTML Files
-- TypeScript Support
-- Basic UI Kit Elements and Files
-- Figma Design Source - Free Sample
-___
-
-### [⬇️ Download Now](https://tailadmin.com/download)
-
-### [⚡ Get PRO Version](https://tailadmin.com/pricing)
-
-### [📄 Documentation/Installation](https://tailadmin.com/docs)
-
-### [🖌️ TailAdmin Figma Free Sample](https://www.figma.com/community/file/1214477970819985778)
-
-### [👉 TailAdmin HTML Version](https://github.com/TailAdmin/tailadmin-free-tailwind-dashboard-template)
-
-
-## Installation
-
-Here are the steps you need to follow to install the dependencies.
-
-1. Download and extract the template from Next.js Templates.
-
-2. After that **cd** into the template directory then run this command to install all the dependencies
+## Env Firebase Template 🔥
 
 ```
-npm install
+NEXT_PUBLIC_API_KEY=YOUR_KEY
+NEXT_PUBLIC_AUTH_DOMAIN=YOUR_KEY
+NEXT_PUBLIC_DATABASE_URL=YOUR_KEY
+NEXT_PUBLIC_PROJECT_ID=YOUR_KEY
+NEXT_PUBLIC_STORAGE_BUCKET=YOUR_KEY
+NEXT_PUBLIC_MESSAGING_SENDER_ID=YOUR_KEY
+NEXT_PUBLIC_APP_ID=YOUR_KEY
 ```
-or
+
+## Libraries Used 📚
+
+- Framework: Next.js 13
+- State Management: Zustand
+- Storage: Firestore
+- UI Framework: Tailwind CSS
+- Auth: Firebase Auth
+
+## Run the App 🚀
 
 ```
-yarn install
-```
-
-3. Now run this command to start the developement server
-
-```
+npm i
 npm run dev
 ```
 
-or 
+## Other Commands 🛠️
 
+```json
+"scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "start": "next start",
+  "lint": "next lint"
+}
 ```
-yarn dev
+
+## Adding Components ➕
+
+1. Create a component in the `components` folder.
+2. Create a file for the component in the appropriate folder.
+
+## Creating New State Management 🔄
+
+1. Create a new file `useState.ts` in the `hooks` folder.
+2. Import and use Zustand with the following example code:
+
+```typescript
+// hooks/useState.ts
+import { create } from 'zustand'
+
+interface State {
+  count: number
+  inc: () => void
+}
+
+const useStore = create<State>((set) => ({
+  count: 1,
+  inc: () => set((state) => ({ count: state.count + 1 })),
+}))
+
+export default useStore
 ```
 
+3. Use the new state management in a component, for example:
 
-## Free Admin Dashboard Template for Next.js Built-with Tailwind CSS, React 18 and TypeScript
-TailAdmin Next.js is a free dashboard template, which uses Tailwind CSS, is a great starting point for dashboard UI. This template uses the Next.js JavaScript framework and the easy-to-use Tailwind CSS framework. The Tailwind CSS and Next.js Dashboard Template comes with ready-made components like navigation menus, charts, tables, and forms. These components can be easily adjusted and added to any Next.js web application.
+```typescript
+// components/Counter.tsx
+import React from 'react'
+import useStore from '../hooks/useState'
 
-TailAdmin for Next.js provides all essential Next.js + Tailwind CSS UI components that can be copied and pasted directly into your dashboard projects. The range of components includes charts, graphs, navbars, tabs, buttons, cards, tables, profiles, forms, modals, app pages, calendars, web app example templates, and more, all coded for Next.js React and styled using Tailwind CSS.
+function Counter() {
+  const { count, inc } = useStore()
 
-If you're on the hunt for a top-quality Next.js-Tailwind Dashboard, Admin Panel Template, or UI Kit, TailAdmin is the perfect choice for you!
+  return (
+    <div>
+      <span>{count}</span>
+      <button onClick={inc}>one up</button>
+    </div>
+  )
+}
 
-### 📄 License
-TailAdmin Next.js Free is 100% free and open-source; feel free to use it with your personal and commercial projects.
+export default Counter
+```
 
-### 💜 Support
-If you like the template, please star this repository to inspire the team to create more stuff like this and reach more users like you!
+## API Endpoints 🚀
+
+1. **API/Peminjaman**
+
+- **GET** `/api/peminjaman`
+  - Description: Get borrowing data.
+  - Usage:
+    - Request Method: GET
+    - Endpoint: `/api/peminjaman`
+    - Example: `GET /api/peminjaman`
+- **POST** `/api/peminjaman`
+
+  - Description: Add return data for borrowing.
+  - Usage:
+
+    - Request Method: POST
+    - Endpoint: `/api/peminjaman`
+    - Body:
+      - Format: JSON
+      - Content: Data borrowing (PeminjamanBody)
+    - Example:
+
+      ```
+      POST /api/peminjaman
+      Content-Type: application/json
+
+      {
+        // Borrowing Data
+      }
+      ```
+
+- **DELETE** `/api/peminjaman`
+
+  - Description: Delete borrowing data based on ID.
+  - Usage:
+
+    - Request Method: DELETE
+    - Endpoint: `/api/peminjaman`
+    - Body:
+      - Format: JSON
+      - Content: { "idPeminjaman": "\<ID_Borrowing>" }
+    - Example:
+
+      ```
+      DELETE /api/peminjaman
+      Content-Type: application/json
+
+      {
+        "idPeminjaman": "<ID_Borrowing>"
+      }
+      ```
+
+2. **API/Pengembalian**
+
+- **GET** `/api/pengembalian`
+  - Description: Get return data.
+  - Usage:
+    - Request Method: GET
+    - Endpoint: `/api/pengembalian`
+    - Example: `GET /api/pengembalian`
+- **POST** `/api/pengembalian`
+
+  - Description: Add return data for borrowing.
+  - Usage:
+
+    - Request Method: POST
+    - Endpoint: `/api/pengembalian`
+    - Body:
+      - Format: JSON
+      - Content: Data borrowing (PeminjamanBody)
+    - Example:
+
+      ```
+      POST /api/pengembalian
+      Content-Type: application/json
+
+      {
+        // Borrowing Data
+      }
+      ```
+
+3. **API/Pengembalian/UpdateStatus**
+
+- **GET** `/api/pengembalian/updateStatus`
+  - Description: Get return data.
+  - Usage:
+    - Request Method: GET
+    - Endpoint: `/api/pengembalian/updateStatus`
+    - Example: `GET /api/pengembalian/updateStatus`
+- **POST** `/api/pengembalian/updateStatus`
+
+  - Description: Add return data for borrowing.
+  - Usage:
+
+    - Request Method: POST
+    - Endpoint: `/api/pengembalian/updateStatus`
+    - Body:
+      - Format: JSON
+      - Content: Data borrowing (PeminjamanBody)
+    - Example:
+
+      ```
+      POST /api/pengembalian/updateStatus
+      Content-Type: application/json
+
+      {
+        // Borrowing Data
+      }
+      ```
+
+4. **API/Statistic**
+
+- **GET** `/api/statistic`
+  - Description: Get statistics related to members, returned books, books not yet returned, and fines.
+  - Usage:
+    - Request Method: GET
+    - Endpoint: `/api/statistic`
+    - Example: `GET /api/statistic`
