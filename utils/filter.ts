@@ -18,7 +18,7 @@ export function findBookByKodeBuku(
 
 export function filterLaporanBuku(
   bukuState: TBuku[],
-  tipeBuku: 'SMA' | 'SMP' | 'Referensi',
+  tipePelajar: 'SMA' | 'SMP' | 'Referensi',
 ) {
   const accumulator: TLaporanBuku = {
     jumlahBukuNonFiksi: {
@@ -77,7 +77,7 @@ export function filterLaporanBuku(
   }
 
   const result = bukuState.reduce((acc, buku) => {
-    if (buku.tipeBuku === tipeBuku) {
+    if (buku.tipePelajar === tipePelajar) {
       // Accumulation logic for kumpulanSoal
       if (buku.jenisBuku === 'kumpulanSoal') {
         acc.jumlahBukuNonFiksi.kumpulanSoal.jumlahBuku += buku.jumlahBuku

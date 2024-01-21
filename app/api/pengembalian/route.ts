@@ -1,15 +1,20 @@
 import { addPengembalian } from '@/service/data/pengembalian'
 import { getDataPengembalian } from '@/service/data/pengembalian'
-import { PeminjamanBody } from '@/types/request'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    const tipePelajar = request.nextUrl.searchParams.get('tipePelajar')
+
     const json = await getDataPengembalian()
+
+    const jsonFiltered = json.filter(
+      (item) => item?.dataPeminjaman?.tipePelajar === tipePelajar,
+    )
 
     let json_response = {
       status: 'success',
-      data: json,
+      data: jsonFiltered,
     }
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,
@@ -25,7 +30,7 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const json: PeminjamanBody = await request.json()
+    const json = await request.json()
 
     await addPengembalian(json)
 
@@ -37,7 +42,7 @@ export async function POST(request: Request) {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     })
-  } catch (error:any) {
+  } catch (error) {
     if (error.code === 'P2002') {
       let error_response = {
         status: 'fail',

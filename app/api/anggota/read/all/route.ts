@@ -3,15 +3,21 @@ import {
   getDataAnggotaAll,
   tambahAnggota,
 } from '@/service/data/anggota'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const response = await getDataAnggotaAll()
+    const tipePelajar = request.nextUrl.searchParams.get('tipePelajar')
+
+    const json = await getDataAnggotaAll()
+
+    const jsonFiltered = json.filter(
+      (item: any) => item?.tipePelajar === tipePelajar,
+    )
 
     let json_response = {
       status: 'success',
-      data: response,
+      data: jsonFiltered,
     }
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,

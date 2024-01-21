@@ -14,10 +14,12 @@ import { TBuku } from '@/types/buku'
 import useAnggotaState from '@/hooks/useAnggotaState'
 import useBukuState from '@/hooks/useBukuState'
 import { findAnggotaByNIS, findBookByKodeBuku } from '@/utils/filter'
+import useCredential from '@/hooks/useCredential'
 
 const TableThree = () => {
   // State
   const [open, setOpen] = useState(false)
+  const { tipePelajar } = useCredential()
 
   const anggotaState = useAnggotaState()
   const bukuState = useBukuState()
@@ -35,6 +37,7 @@ const TableThree = () => {
     'tanggalPeminjaman'
   >
   const inputRefs = useRef<PaketTanpaTanggalPengembalian>({
+    tipePelajar: tipePelajar,
     idAnggota: '',
     nis: '',
     idBuku: '',
@@ -98,6 +101,7 @@ const TableThree = () => {
 
       const formData: TRequestPeminjaman = {
         idAnggota: dataAnggota?.idAnggota,
+        tipePelajar: tipePelajar,
         nis: dataAnggota?.nis,
         idBuku: dataBuku?.idBuku,
         kodeBuku: dataBuku?.kodeBuku,

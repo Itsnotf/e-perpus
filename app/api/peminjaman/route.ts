@@ -5,15 +5,21 @@ import {
 } from '@/service/data/peminjaman'
 import { addPengembalian } from '@/service/data/pengembalian'
 import { TRequestPeminjaman } from '@/types/peminjaman'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    const tipePelajar = request.nextUrl.searchParams.get('tipePelajar')
+
     const json = await getDataPeminjaman()
+
+    const jsonFiltered = json.filter(
+      (item) => item?.dataAnggota?.tipePelajar === tipePelajar,
+    )
 
     let json_response = {
       status: 'success',
-      data: json,
+      data: jsonFiltered,
     }
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,

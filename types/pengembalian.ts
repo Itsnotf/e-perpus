@@ -6,6 +6,7 @@ export type TResponseGetPengembalian = {
   status: string
   denda: number
   tanggalPengembalian: Date
+  tipePelajar: 'SMA' | 'SMP' | 'Referensi'
 }
 
 export interface TRequestPengembalian {
@@ -13,4 +14,5 @@ export interface TRequestPengembalian {
   denda: number
   status: 'selesai' | 'belum'
   tanggalPengembalian: Date
+  tipePelajar: 'SMA' | 'SMP' | 'Referensi'
 }

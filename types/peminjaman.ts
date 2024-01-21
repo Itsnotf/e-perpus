@@ -9,6 +9,7 @@ export type TResponseGetPeminjaman = {
   dataBuku: TBuku
   tanggalPeminjaman: Date
   tanggalPengembalian: Date
+  tipePelajar: 'SMA' | 'SMP' | 'Referensi'
 }
 
 export interface TRequestPeminjaman {
@@ -19,4 +20,5 @@ export interface TRequestPeminjaman {
   kodeBuku: string
   tanggalPeminjaman: Date
   tanggalPengembalian: Date
+  tipePelajar: 'SMA' | 'SMP' | 'Referensi'
 }

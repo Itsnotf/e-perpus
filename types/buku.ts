@@ -2,7 +2,7 @@ export interface TBuku {
   idBuku: string
   kodeBuku: string
   namaBuku: string
-  tipeBuku: 'SMA' | 'SMP' | 'Referensi'
+  tipePelajar: 'SMA' | 'SMP' | 'Referensi'
   jenisBuku: string
   jumlahBuku: number
   jumlahRusakA: number

@@ -1,4 +1,5 @@
-import { firebaseApp } from '../firebase-sdk'
+import { getCredential } from '@/utils/cookie'
+import { db, firebaseApp } from '../firebase-sdk'
 import { getApps } from 'firebase/app'
 import {
   getAuth,
@@ -8,6 +9,8 @@ import {
   signInWithPopup,
 } from 'firebase/auth'
 import { GoogleAuthProvider } from 'firebase/auth/cordova'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { cookies } from 'next/headers'
 
 if (!getApps().length) {
   firebaseApp

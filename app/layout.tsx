@@ -17,6 +17,9 @@ import useStatisticState from '@/hooks/useStatisticState'
 import useInitStates from '@/hooks/useInitStates'
 import useBukuState from '@/hooks/useBukuState'
 import useAnggotaState from '@/hooks/useAnggotaState'
+import useCredential from '@/hooks/useCredential'
+import { getCredential } from '@/utils/cookie'
+import { hitungDenda } from '@/utils/hitungDenda'
 
 export default function RootLayout({
   children,
@@ -29,6 +32,7 @@ export default function RootLayout({
   const [loading, setLoading] = useState(true)
 
   // costume state hooks dengan zustand
+  const { setEmail, setTipePelajar, tipePelajar } = useCredential()
   const peminjamanState = usePeminjamanState()
   const pengembalianState = usePengembalianState()
   const statisticState = useStatisticState()
@@ -42,6 +46,7 @@ export default function RootLayout({
 
   useEffect(() => {
     useInitStates({
+      tipePelajar,
       anggotaState,
       bukuState,
       peminjamanState,
@@ -50,10 +55,21 @@ export default function RootLayout({
     })
   }, [])
 
+  useEffect(() => {
+    statisticState.addDenda(hitungDenda(peminjamanState, statisticState))
+  }, [peminjamanState])
+
+  console.log({ tipePelajar })
+
   // auth
   useEffect(() => {
     Authentication().onAuthStateChanged((user) => {
       if (user) {
+        getCredential(user.email as string).then((credential) => {
+          setEmail(credential?.email)
+          setTipePelajar(credential?.tipePelajar)
+        })
+
         console.log('Sudah Masuk')
         setLogin(true)
       } else {

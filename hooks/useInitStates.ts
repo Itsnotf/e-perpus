@@ -10,8 +10,10 @@ import { TBuku } from '@/types/buku'
 import { TAnggotaState } from './useAnggotaState'
 import { TAnggota } from '@/types/anggota'
 import { TResponseGetPeminjaman } from '@/types/peminjaman'
+import { TTipePelajar } from './useCredential'
 
 type Props = {
+  tipePelajar: TTipePelajar
   anggotaState: TAnggotaState
   bukuState: TBukuState
   peminjamanState: TPeminjamanState
@@ -20,6 +22,7 @@ type Props = {
 }
 
 const useInitStates = ({
+  tipePelajar,
   anggotaState,
   bukuState,
   peminjamanState,
@@ -35,11 +38,21 @@ const useInitStates = ({
         pengembalianResponse,
         statisticResponse,
       ] = await Promise.all([
-        fetch('/api/anggota/read/all').then((res) => res.json()),
-        fetch('/api/buku/read/all').then((res) => res.json()),
-        fetch('/api/peminjaman').then((res) => res.json()),
-        fetch('/api/pengembalian').then((res) => res.json()),
-        fetch('/api/statistic').then((res) => res.json()),
+        fetch('/api/anggota/read/all?tipePelajar=' + tipePelajar).then((res) =>
+          res.json(),
+        ),
+        fetch('/api/buku/read/all?tipePelajar=' + tipePelajar).then((res) =>
+          res.json(),
+        ),
+        fetch('/api/peminjaman?tipePelajar=' + tipePelajar).then((res) =>
+          res.json(),
+        ),
+        fetch('/api/pengembalian?tipePelajar=' + tipePelajar).then((res) =>
+          res.json(),
+        ),
+        fetch('/api/statistic?tipePelajar=' + tipePelajar).then((res) =>
+          res.json(),
+        ),
       ])
 
       // save in state

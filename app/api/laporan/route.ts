@@ -1,26 +1,9 @@
-import { countAnggotaByKategoriKelas } from '@/service/data/laporan'
-import {
-  countAnggota,
-  countBukuBelumDikembalikan,
-  countBukuDikembalikan,
-} from '@/service/data/statistic'
 import { db } from '@/service/firebase-sdk'
-import { TAnggota } from '@/types/anggota'
-import { TLaporanPengunjungByKelas } from '@/types/laporan'
-import { TResponseGetPeminjaman } from '@/types/peminjaman'
-import {
-  DocumentSnapshot,
-  collection,
-  getDocs,
-  query,
-  where,
-} from 'firebase/firestore'
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   try {
-    // const json: TLaporanPengunjungByKelas = await generateLaporanPengunjungByKelas()
-
     const json = await getLaporan()
 
     let json_response = {
@@ -58,7 +41,10 @@ const getLaporan = async () => {
   const monthlyData: MonthlyData = {}
 
   // Query peminjaman collection
-  const peminjamanQuery = query(collection(db, 'peminjaman'))
+  const peminjamanQuery = query(
+    collection(db, 'peminjaman'),
+    orderBy('tanggalPeminjaman', 'asc'),
+  )
 
   const peminjamanDocs = await getDocs(peminjamanQuery)
 

@@ -50,6 +50,7 @@ export async function getDataPeminjamanById(idPeminjaman: string) {
     if (document.exists()) {
       const data: TResponseGetPeminjaman = {
         idPeminjaman: peminjamanDocRef.id,
+        tipePelajar: document.data().tipePelajar,
         idAnggota: document.data().idAnggota,
         dataAnggota: (await getDataAnggota(
           document.data().idAnggota,

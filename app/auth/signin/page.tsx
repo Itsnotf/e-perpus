@@ -7,6 +7,17 @@ import {
   SignInWithGoogle,
 } from '@/service/auths/login'
 import FormError from '@/components/Error'
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+} from 'firebase/firestore'
+import { db } from '@/service/firebase-sdk'
+import useCredential from '@/hooks/useCredential'
+import { getCredential } from '@/utils/cookie'
 
 const SignIns = () => {
   const {
@@ -19,8 +30,8 @@ const SignIns = () => {
     const { email, password } = velues
     try {
       await SignIn(email, password)
-    } catch (error:any) {
-      const message = GetSignInErrorMessage(error.code)
+    } catch (error) {
+      const message = GetSignInErrorMessage((error as { code: string }).code)
       console.log(message)
     }
   }

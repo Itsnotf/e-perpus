@@ -12,15 +12,11 @@ import { TBuku } from '@/types/buku'
 import { Dropdown } from 'flowbite-react'
 import { HiOutlineDotsVertical } from 'react-icons/hi'
 import { TLaporanPengunjungByKelas } from '@/types/laporan'
+import useCredential from '@/hooks/useCredential'
 
 const TableLaporanPeminjaman = () => {
   // State
   const [dataLaporan, setDataLaporan] = useState<TLaporanPengunjungByKelas>()
-  const [open, setOpen] = useState(false)
-  const [isEdit, setIsEdit] = useState<'edit' | 'create'>('create')
-  const bukuState = useBukuState()
-  // const pengembalianState = usePengembalianState()
-  // const statisticState = useStatisticState()
 
   //   initial data
   useEffect(() => {
@@ -116,12 +112,14 @@ interface MonthlyData {
   }
 }
 const DataTable = ({ month, data }: { month: string; data: MonthlyData }) => {
+  const { tipePelajar } = useCredential()
+
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
       <div className="max-w-full overflow-x-auto  ">
         <div className="flex items-center justify-between pb-6 px-4 md:px-6 xl:px-7.5 border-b-[1px]">
           <h4 className="text-xl font-semibold text-black dark:text-white">
-            Data Peminjam Siswa / Siswi SMA
+            Data Peminjam Siswa / Siswi {tipePelajar}
           </h4>
           <h4 className="text-xl font-semibold text-black dark:text-white">
             {month}
