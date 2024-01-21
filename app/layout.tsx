@@ -11,10 +11,7 @@ import Header from '@/components/Header'
 import { Package } from '@/types/package'
 import { ApiResponse } from '@/types/request'
 import usePeminjamanState from '@/hooks/usePeminjamanState'
-import {
-  convertGetPeminjaman,
-  convertGetPengembalian,
-} from '@/utils/convertApiResponse'
+import { convertGetPengembalian } from '@/utils/convertApiResponse'
 import usePengembalianState from '@/hooks/usePengembalianState'
 import useStatisticState from '@/hooks/useStatisticState'
 import useInitStates from '@/hooks/useInitStates'

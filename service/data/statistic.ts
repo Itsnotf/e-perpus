@@ -9,7 +9,7 @@ import {
 import { db } from '../firebase-sdk'
 
 // Fungsi utilitas untuk menghitung jumlah dokumen dalam suatu koleksi
-const countDocuments = async (
+export const countDocuments = async (
   collectionRef: CollectionReference<DocumentData, DocumentData>,
   condition = null as any, // Kondisi untuk query opsional, default null
   statusMessage: string, // Pesan log untuk menunjukkan status

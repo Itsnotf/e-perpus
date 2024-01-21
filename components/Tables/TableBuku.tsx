@@ -2,7 +2,6 @@
 import { Package } from '@/types/package'
 import { useState, useEffect, useRef, ChangeEvent } from 'react'
 import axios from 'axios'
-import { PeminjamanBody } from '@/types/request'
 import usePengembalianState from '@/hooks/usePengembalianState'
 import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
 import useStatisticState from '@/hooks/useStatisticState'

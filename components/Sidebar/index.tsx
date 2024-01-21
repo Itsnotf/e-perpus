@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation'
 import SidebarLinkGroup from './SidebarLinkGroup'
 import Image from 'next/image'
 import path from 'node:path/win32'
+import { HiOutlineDocumentReport } from 'react-icons/hi'
 
 interface SidebarProps {
   sidebarOpen: boolean
@@ -279,6 +280,33 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                     />
                   </svg>
                   Denda
+                </Link>
+              </li>
+
+              {/* <!-- Menu Laporan --> */}
+              <li>
+                <Link
+                  href="/laporan/peminjaman"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('laporan/peminjaman') &&
+                    'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <HiOutlineDocumentReport fontSize={18} />
+                  Laporan Peminjaman
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  href="/laporan/buku"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('laporan/buku') &&
+                    'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <HiOutlineDocumentReport fontSize={18} />
+                  Laporan Buku
                 </Link>
               </li>
 

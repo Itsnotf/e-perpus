@@ -2,17 +2,20 @@
 import React, { useRef } from 'react'
 import CardDataStats from '../CardDataStats'
 import useStatisticState from '@/hooks/useStatisticState'
-import usePeminjamanState from '@/hooks/usePeminjamanState'
-import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
 
 const Cards = () => {
   const statisticState = useStatisticState()
+
+  console.log({ statisticState })
 
   return (
     <>
       <CardDataStats
         title="Total Peminjaman"
-        total={statisticState.jumlahPeminjam.toString()}
+        total={(
+          statisticState.jumlahBukuDikembalikan +
+          statisticState.jumlahBukuBelumDikembalikan
+        ).toString()}
         rate="0"
         levelUp
       >
