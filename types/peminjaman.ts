@@ -1,22 +1,21 @@
+import { TAnggota } from './anggota'
+import { TBuku } from './buku'
+
 export type TResponseGetPeminjaman = {
   idPeminjaman: string
   idAnggota: string
-  dataAnggota: {
-    kelas: string
-    hp: string
-    nama: string
-  }
-  kodeBuku: string
-  databuku: {
-    kodeBuku: string
-    namaBuku: string
-  }
+  dataAnggota: TAnggota
+  idBuku: string
+  dataBuku: TBuku
   tanggalPeminjaman: Date
   tanggalPengembalian: Date
 }
 
-export interface TPeminjaman {
+export interface TRequestPeminjaman {
+  idPengembalian: string
   idAnggota: string
+  nis: string
+  idBuku: string
   kodeBuku: string
   tanggalPeminjaman: Date
   tanggalPengembalian: Date

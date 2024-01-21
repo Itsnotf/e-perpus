@@ -2,17 +2,25 @@
 import { Package } from '@/types/package'
 import { useState, useEffect, useRef, ChangeEvent } from 'react'
 import axios from 'axios'
-import { PeminjamanBody } from '@/types/request'
 import usePeminjamanState from '@/hooks/usePeminjamanState'
 import usePengembalianState from '@/hooks/usePengembalianState'
 import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
 import useStatisticState from '@/hooks/useStatisticState'
 import useInitStates from '@/hooks/useInitStates'
 import { hitungDenda } from '@/utils/hitungDenda'
+import { TRequestPeminjaman, TResponseGetPeminjaman } from '@/types/peminjaman'
+import { TAnggota } from '@/types/anggota'
+import { TBuku } from '@/types/buku'
+import useAnggotaState from '@/hooks/useAnggotaState'
+import useBukuState from '@/hooks/useBukuState'
+import { findAnggotaByNIS, findBookByKodeBuku } from '@/utils/filter'
 
 const TableThree = () => {
   // State
   const [open, setOpen] = useState(false)
+
+  const anggotaState = useAnggotaState()
+  const bukuState = useBukuState()
   const peminjamanState = usePeminjamanState()
   const pengembalianState = usePengembalianState()
   const statisticState = useStatisticState()
@@ -22,14 +30,16 @@ const TableThree = () => {
   }, [])
 
   // Ref
-  type PaketTanpaTanggalPengembalian = Omit<Package, 'tanggalPeminjaman'>
+  type PaketTanpaTanggalPengembalian = Omit<
+    TRequestPeminjaman,
+    'tanggalPeminjaman'
+  >
   const inputRefs = useRef<PaketTanpaTanggalPengembalian>({
-    nama: '',
-    nim: '',
-    kelas: '',
-    status: 'belum',
+    idAnggota: '',
+    nis: '',
+    idBuku: '',
     kodeBuku: '',
-    namaBuku: '',
+    idPengembalian: '',
     tanggalPengembalian: new Date(),
   })
 
@@ -42,7 +52,7 @@ const TableThree = () => {
     setOpen(false)
   }
 
-  const handleDelete = async (packageItem: Package) => {
+  const handleDelete = async (packageItem: TResponseGetPeminjaman) => {
     try {
       if (!confirm('Apakah anda yakin mau menghapus data peminjaman ini?'))
         return
@@ -65,50 +75,50 @@ const TableThree = () => {
       console.log(response.data)
       console.log('Data success deleted')
     } catch (error) {
-      console.error('Error:', error.response?.data || error?.message)
+      if (error instanceof Error) console.error('Error:', error?.message)
       console.log('Data failed delete')
     }
   }
 
   const handleSubmit = async () => {
     try {
-      const formData: Package = {
-        nama: inputRefs.current.nama,
-        nim: inputRefs.current.nim,
-        kelas: inputRefs.current.kelas,
-        status: inputRefs.current.status,
-        kodeBuku: inputRefs.current.kodeBuku,
-        namaBuku: inputRefs.current.namaBuku,
+      const dataAnggota = findAnggotaByNIS(
+        anggotaState.data,
+        inputRefs.current.nis,
+      )
+      const dataBuku = findBookByKodeBuku(
+        bukuState.data,
+        inputRefs.current.kodeBuku,
+      )
+
+      if (!dataAnggota || !dataBuku) {
+        alert('Anggota atau buku tidak ditemukan')
+        return
+      }
+
+      const formData: TRequestPeminjaman = {
+        idAnggota: dataAnggota?.idAnggota,
+        nis: dataAnggota?.nis,
+        idBuku: dataBuku?.idBuku,
+        kodeBuku: dataBuku?.kodeBuku,
+        idPengembalian: '',
         tanggalPeminjaman: new Date(),
         tanggalPengembalian: new Date(inputRefs.current.tanggalPengembalian),
       }
 
+      console.log({ input: formData })
+
       // Send data to Next.js API route
-      const response = await axios.post('/api/peminjaman', {
-        anggota: {
-          hp: formData.nim,
-          kelas: formData.kelas,
-          nama: formData.nama,
-        },
-        buku: {
-          kodeBuku: formData.kodeBuku,
-          namaBuku: formData.namaBuku,
-        },
-        peminjaman: {
-          tanggalPeminjaman: formData.tanggalPeminjaman,
-          tanggalPengembalian: formData.tanggalPengembalian,
-        },
-        pengembalian: {
-          denda: 0,
-          status: 'belum',
-          tanggalPengembalian: '',
-        },
-      } as PeminjamanBody)
+      const response = await axios.post('/api/peminjaman', formData)
+      console.log({ response })
 
       // update state
-      peminjamanState.addData(formData)
-      pengembalianState.addData(formData)
-      console.log('Data successfully submitted to API:', response.data)
+      peminjamanState.addData(response.data as TResponseGetPeminjaman)
+      // pengembalianState.addData(formData)
+      console.log(
+        'Data successfully submitted to API:',
+        response.data as TResponseGetPeminjaman,
+      )
 
       // ! bug button ga mau diklik, untuk sementara di refresh aja
       // useInitStates({ peminjamanState, pengembalianState, statisticState })
@@ -139,7 +149,7 @@ const TableThree = () => {
           <thead>
             <tr className="bg-gray-2 text-left dark:bg-meta-4">
               <th className="min-w-[220px] py-4 px-4 font-medium text-black dark:text-white xl:pl-11">
-                NIM
+                NIS
               </th>
               <th className="min-w-[150px] py-4 px-4 font-medium text-black dark:text-white">
                 Nama
@@ -162,36 +172,36 @@ const TableThree = () => {
             </tr>
           </thead>
           <tbody>
-            {peminjamanState.data.map((packageItem, key) => {
+            {peminjamanState.data?.map((packageItem, key) => {
               return (
                 <tr key={key}>
                   <td className="border-b border-[#eee] py-5 px-4 pl-9 dark:border-strokedark xl:pl-11">
                     <h5 className="font-medium text-black dark:text-white">
-                      {packageItem.nim}
+                      {packageItem?.dataAnggota?.nis}
                     </h5>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {packageItem.nama}
+                      {packageItem?.dataAnggota?.nama}
                     </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {packageItem.namaBuku}
+                      {packageItem?.dataBuku?.namaBuku}
                     </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {packageItem.tanggalPeminjaman.toLocaleDateString(
-                        'id-ID',
-                      )}
+                      {new Date(
+                        packageItem?.tanggalPeminjaman,
+                      )?.toLocaleDateString('id-ID')}
                     </p>
                   </td>
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <p className="text-black dark:text-white">
-                      {packageItem.tanggalPengembalian.toLocaleDateString(
-                        'id-ID',
-                      )}
+                      {new Date(
+                        packageItem?.tanggalPengembalian,
+                      )?.toLocaleDateString('id-ID')}
                     </p>
                   </td>
                   {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
@@ -300,7 +310,7 @@ const TableThree = () => {
               <div className="flex flex-col gap-5.5 p-6.5">
                 <div>
                   <label className="mb-3 block text-black dark:text-white">
-                    NIM
+                    NIS
                   </label>
                   <input
                     maxLength={4}
@@ -308,36 +318,8 @@ const TableThree = () => {
                     placeholder="Default Input"
                     className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      inputRefs.current.nim = e.target.value
+                      inputRefs.current.nis = e.target.value
                     }}
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Nama
-                  </label>
-                  <input
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      inputRefs.current.nama = e.target.value
-                    }}
-                    type="text"
-                    placeholder="Default Input"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Kelas
-                  </label>
-                  <input
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      inputRefs.current.kelas = e.target.value
-                    }}
-                    type="text"
-                    placeholder="Default Input"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                   />
                 </div>
               </div>
@@ -355,20 +337,6 @@ const TableThree = () => {
                   <input
                     onChange={(e: ChangeEvent<HTMLInputElement>) => {
                       inputRefs.current.kodeBuku = e.target.value
-                    }}
-                    type="text"
-                    placeholder="Default Input"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Buku
-                  </label>
-                  <input
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      inputRefs.current.namaBuku = e.target.value
                     }}
                     type="text"
                     placeholder="Default Input"

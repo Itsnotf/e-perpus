@@ -38,8 +38,6 @@ export default function RootLayout({
   const bukuState = useBukuState()
   const anggotaState = useAnggotaState()
 
-  console.log({ bukuState: bukuState.data })
-
   // init
   useEffect(() => {
     setTimeout(() => setLoading(false), 1000)

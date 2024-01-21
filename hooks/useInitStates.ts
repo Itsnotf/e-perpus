@@ -1,7 +1,4 @@
-import {
-  convertGetPeminjaman,
-  convertGetPengembalian,
-} from '@/utils/convertApiResponse'
+import { convertGetPengembalian } from '@/utils/convertApiResponse'
 import React from 'react'
 import { TPeminjamanState } from './usePeminjamanState'
 import { TPengembalianState } from './usePengembalianState'
@@ -12,6 +9,7 @@ import { TBukuState } from './useBukuState'
 import { TBuku } from '@/types/buku'
 import { TAnggotaState } from './useAnggotaState'
 import { TAnggota } from '@/types/anggota'
+import { TResponseGetPeminjaman } from '@/types/peminjaman'
 
 type Props = {
   anggotaState: TAnggotaState
@@ -47,9 +45,9 @@ const useInitStates = ({
       // save in state
       anggotaState.setData(anggotaResponse?.data as TAnggota[])
       bukuState.setData(bukuResponse?.data as TBuku[])
-
-      const convertedPeminjaman = convertGetPeminjaman(peminjamanResponse)
-      peminjamanState.setData(convertedPeminjaman)
+      peminjamanState.setData(
+        peminjamanResponse?.data as TResponseGetPeminjaman[],
+      )
 
       const convertedPengembalian = convertGetPengembalian(pengembalianResponse)
       pengembalianState.setData(convertedPengembalian)

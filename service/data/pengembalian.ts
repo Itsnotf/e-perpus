@@ -11,7 +11,8 @@ import {
   where,
 } from 'firebase/firestore'
 import { getDataPeminjamanById } from './peminjaman'
-import { PeminjamanBody } from '@/types/request'
+import { TRequestPeminjaman } from '@/types/peminjaman'
+import { TRequestPengembalian } from '@/types/pengembalian'
 
 export async function getDataPengembalian() {
   try {
@@ -80,23 +81,33 @@ export async function postUpdateStatus(idPeminjaman: string) {
   }
 }
 
-export async function addPengembalian(json: PeminjamanBody) {
-  const anggotaRef = collection(db, 'anggota')
-  const anggotaDoc = await addDoc(anggotaRef, json.anggota)
-
-  const bukuRef = collection(db, 'buku')
-  const bukuDoc = await addDoc(bukuRef, json.buku)
-
-  // add the id from document
-  json.peminjaman.idAnggota = anggotaDoc.id
-  json.peminjaman.kodeBuku = bukuDoc.id
-
+export async function addPengembalian(json: TRequestPeminjaman) {
+  // create document
   const peminjamanRef = collection(db, 'peminjaman')
-  const peminjamanDoc = await addDoc(peminjamanRef, json.peminjaman)
-
-  json.pengembalian.idPeminjaman = peminjamanDoc.id
   const pengembalianRef = collection(db, 'pengembalian')
-  await addDoc(pengembalianRef, json.pengembalian)
+
+  // data mapping
+  const dataPeminjaman: TRequestPeminjaman = {
+    ...json,
+    idPengembalian: pengembalianRef.id,
+  }
+
+  // add data to document
+  const peminjamanDoc = await addDoc(peminjamanRef, dataPeminjaman)
+
+  const dataPengembalian: TRequestPengembalian = {
+    idPeminjaman: peminjamanDoc.id,
+    denda: 0,
+    status: 'belum',
+    tanggalPengembalian: json.tanggalPengembalian,
+  }
+  const pengembalianDoc = await addDoc(pengembalianRef, dataPengembalian)
+
+  // update peminjaman document with pengembalian id
+  await updateDoc(doc(db, 'peminjaman', peminjamanDoc.id), {
+    idPengembalian: pengembalianDoc.id,
+  })
+  return peminjamanDoc.id
 }
 
 export async function deletePengembalianById(idPengembalian: string) {
@@ -133,13 +144,15 @@ export async function getDataPengembalianById(idPengembalian: string) {
         ),
         status: pengembalianDocSnapshot.data().status,
         denda: pengembalianDocSnapshot.data().denda,
-        tanggalPengembalian: new Date(pengembalianDocSnapshot.data().tanggalPengembalian),
+        tanggalPengembalian: new Date(
+          pengembalianDocSnapshot.data().tanggalPengembalian,
+        ),
       }
 
-      return data;
+      return data
     } else {
-      console.error(`Pengembalian with id ${idPengembalian} not found`);
-      return null;
+      console.error(`Pengembalian with id ${idPengembalian} not found`)
+      return null
     }
   } catch (error) {
     console.error('Error fetching pengembalian data by ID:', error)
@@ -147,15 +160,14 @@ export async function getDataPengembalianById(idPengembalian: string) {
   }
 }
 
-
 export async function getDataPengembalianByIdPeminjaman(idPeminjaman: string) {
   try {
     const q = query(
       collection(db, 'pengembalian'),
       where('idPeminjaman', '==', idPeminjaman),
-    );
+    )
 
-    const querySnapshot = await getDocs(q);
+    const querySnapshot = await getDocs(q)
     const responsePromises = querySnapshot.docs.map(async (document) => {
       const data = {
         idPeminjaman: document.data().idPeminjaman,
@@ -165,16 +177,16 @@ export async function getDataPengembalianByIdPeminjaman(idPeminjaman: string) {
         status: document.data().status,
         denda: document.data().denda,
         tanggalPengembalian: new Date(document.data().tanggalPengembalian),
-      };
+      }
 
-      return data;
-    });
+      return data
+    })
 
-    const response = await Promise.all(responsePromises);
-    return response;
+    const response = await Promise.all(responsePromises)
+    return response
   } catch (error) {
-    console.error('Error fetching pengembalian data by idPeminjaman:', error);
-    throw error;
+    console.error('Error fetching pengembalian data by idPeminjaman:', error)
+    throw error
   }
 }
 
@@ -183,24 +195,26 @@ export async function deletePengembalianByPeminjamanId(idPeminjaman: string) {
     const q = query(
       collection(db, 'pengembalian'),
       where('idPeminjaman', '==', idPeminjaman),
-    );
-    const querySnapshot = await getDocs(q);
+    )
+    const querySnapshot = await getDocs(q)
 
     if (querySnapshot.size === 0) {
-      console.error(`No pengembalian found for idPeminjaman ${idPeminjaman}`);
-      return;
+      console.error(`No pengembalian found for idPeminjaman ${idPeminjaman}`)
+      return
     }
 
     // Delete all pengembalian documents with the specified idPeminjaman
     const deletePromises = querySnapshot.docs.map(async (doc) => {
-      await deleteDoc(doc.ref);
-    });
+      await deleteDoc(doc.ref)
+    })
 
-    await Promise.all(deletePromises);
+    await Promise.all(deletePromises)
 
-    console.log(`Pengembalian(s) for idPeminjaman ${idPeminjaman} deleted successfully`);
+    console.log(
+      `Pengembalian(s) for idPeminjaman ${idPeminjaman} deleted successfully`,
+    )
   } catch (error) {
-    console.error('Error deleting pengembalian(s) by idPeminjaman:', error);
-    throw error;
+    console.error('Error deleting pengembalian(s) by idPeminjaman:', error)
+    throw error
   }
 }

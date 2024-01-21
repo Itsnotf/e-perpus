@@ -1,13 +1,14 @@
 import { Package } from '@/types/package'
+import { TResponseGetPeminjaman } from '@/types/peminjaman'
 import { create } from 'zustand'
 
 interface State {
-  data: Package[]
+  data: TResponseGetPeminjaman[]
 }
 
 interface Actions {
-  setData: (data: Package[]) => void
-  addData: (newData: Package) => void
+  setData: (data: TResponseGetPeminjaman[]) => void
+  addData: (newData: TResponseGetPeminjaman) => void
   deleteData: (idPeminjaman: string) => void
 }
 

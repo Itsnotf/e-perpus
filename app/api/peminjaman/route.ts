@@ -4,9 +4,7 @@ import {
   getDataPeminjamanById,
 } from '@/service/data/peminjaman'
 import { addPengembalian } from '@/service/data/pengembalian'
-import { db } from '@/service/firebase-sdk'
-import { ApiResponse, PeminjamanBody } from '@/types/request'
-import { addDoc, collection } from 'firebase/firestore'
+import { TRequestPeminjaman } from '@/types/peminjaman'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -31,38 +29,42 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const json: PeminjamanBody = await request.json()
+    const json: TRequestPeminjaman = await request.json()
 
-    await addPengembalian(json)
+    const idPeminjaman = await addPengembalian(json)
+
+    const response = getDataPeminjamanById(idPeminjaman)
 
     let json_response = {
       status: 'success',
-      data: json,
+      data: response,
     }
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     })
-  } catch (error:any) {
-    if (error.code === 'P2002') {
+  } catch (error) {
+    if (error instanceof Error) {
+      if ((error as any).code === 'P2002') {
+        let error_response = {
+          status: 'fail',
+          message: 'Feedback with title already exists',
+        }
+        return new NextResponse(JSON.stringify(error_response), {
+          status: 409,
+          headers: { 'Content-Type': 'application/json' },
+        })
+      }
+
       let error_response = {
-        status: 'fail',
-        message: 'Feedback with title already exists',
+        status: 'error',
+        message: error.message,
       }
       return new NextResponse(JSON.stringify(error_response), {
-        status: 409,
+        status: 500,
         headers: { 'Content-Type': 'application/json' },
       })
     }
-
-    let error_response = {
-      status: 'error',
-      message: error.message,
-    }
-    return new NextResponse(JSON.stringify(error_response), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    })
   }
 }
 
@@ -89,14 +91,16 @@ export async function DELETE(request: Request) {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })
-  } catch (error:any) {
-    let error_response = {
-      status: 'error',
-      message: error.message,
+  } catch (error) {
+    if (error instanceof Error) {
+      let error_response = {
+        status: 'error',
+        message: error.message,
+      }
+      return new NextResponse(JSON.stringify(error_response), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      })
     }
-    return new NextResponse(JSON.stringify(error_response), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    })
   }
 }

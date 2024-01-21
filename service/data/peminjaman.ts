@@ -9,6 +9,9 @@ import {
   getDataPengembalianById,
   getDataPengembalianByIdPeminjaman,
 } from './pengembalian'
+import { TResponseGetPeminjaman } from '@/types/peminjaman'
+import { TAnggota } from '@/types/anggota'
+import { TBuku } from '@/types/buku'
 
 export async function getDataPeminjaman() {
   try {
@@ -19,8 +22,8 @@ export async function getDataPeminjaman() {
         idPeminjaman: document.id,
         idAnggota: document.data().idAnggota,
         dataAnggota: await getDataAnggota(document.data().idAnggota),
-        kodeBuku: document.data().kodeBuku,
-        databuku: await getDataBuku(document.data().kodeBuku),
+        idBuku: document.data().idBuku,
+        dataBuku: await getDataBuku(document.data().idBuku),
 
         tanggalPeminjaman: new Date(document.data().tanggalPeminjaman),
         tanggalPengembalian: new Date(document.data().tanggalPengembalian),
@@ -30,6 +33,7 @@ export async function getDataPeminjaman() {
     })
 
     const response = await Promise.all(responsePromises)
+    console.log({ response })
 
     return response
   } catch (error) {
@@ -41,21 +45,20 @@ export async function getDataPeminjaman() {
 export async function getDataPeminjamanById(idPeminjaman: string) {
   try {
     const peminjamanDocRef = doc(db, 'peminjaman', idPeminjaman)
-    const peminjamanSnapshot = await getDoc(peminjamanDocRef)
+    const document = await getDoc(peminjamanDocRef)
 
-    if (peminjamanSnapshot.exists()) {
-      const data = {
-        idAnggota: peminjamanSnapshot.data().idAnggota,
-        dataAnggota: await getDataAnggota(peminjamanSnapshot.data().idAnggota),
-        kodeBuku: peminjamanSnapshot.data().kodeBuku,
-        databuku: await getDataBuku(peminjamanSnapshot.data().kodeBuku),
+    if (document.exists()) {
+      const data: TResponseGetPeminjaman = {
+        idPeminjaman: peminjamanDocRef.id,
+        idAnggota: document.data().idAnggota,
+        dataAnggota: (await getDataAnggota(
+          document.data().idAnggota,
+        )) as TAnggota,
+        idBuku: document.data().idBuku,
+        dataBuku: (await getDataBuku(document.data().idBuku)) as TBuku,
 
-        tanggalPeminjaman: new Date(
-          peminjamanSnapshot.data().tanggalPeminjaman,
-        ),
-        tanggalPengembalian: new Date(
-          peminjamanSnapshot.data().tanggalPengembalian,
-        ),
+        tanggalPeminjaman: new Date(document.data().tanggalPeminjaman),
+        tanggalPengembalian: new Date(document.data().tanggalPengembalian),
       }
 
       return data
@@ -74,7 +77,7 @@ export async function deleteDataPeminjaman(idPeminjaman: string) {
 
     dataPeminjaman.map(async (doc) => {
       if (doc.idPeminjaman === idPeminjaman) {
-        await hapusBuku(doc.kodeBuku)
+        await hapusBuku(doc.idBuku)
         await hapusAnggota(doc.idAnggota)
         await deletePengembalianByPeminjamanId(idPeminjaman)
       }

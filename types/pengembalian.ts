@@ -1,26 +1,14 @@
+import { TResponseGetPeminjaman } from './peminjaman'
+
 export type TResponseGetPengembalian = {
   idPeminjaman: string
-  dataPeminjaman: {
-    idAnggota: string
-    dataAnggota: {
-      kelas: string
-      hp: string
-      nama: string
-    }
-    kodeBuku: string
-    databuku: {
-      namaBuku: string
-      kodeBuku: string
-    }
-    tanggalPeminjaman: Date
-    tanggalPengembalian: Date
-  }
+  dataPeminjaman: TResponseGetPeminjaman
   status: string
   denda: number
   tanggalPengembalian: Date
 }
 
-export interface TPengembalian {
+export interface TRequestPengembalian {
   idPeminjaman: string
   denda: number
   status: 'selesai' | 'belum'

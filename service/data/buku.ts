@@ -32,9 +32,9 @@ export async function getDataBukuAll() {
   }
 }
 
-export async function getDataBuku(kodeBuku: string) {
+export async function getDataBuku(idBuku: string) {
   try {
-    const bukuDocRef = doc(db, 'buku', kodeBuku)
+    const bukuDocRef = doc(db, 'buku', idBuku)
     const bukuSnapshot = await getDoc(bukuDocRef)
 
     if (bukuSnapshot.exists()) {
