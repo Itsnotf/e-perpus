@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     // Extract the idPeminjaman parameter from the query parameters
     const idPeminjaman = request.nextUrl.searchParams.get('idPeminjaman')
-    console.log({ idPeminjaman })
+    // console.log({ idPeminjaman })
 
     // Check if the idPeminjaman parameter is present
     if (!idPeminjaman) {

@@ -1,17 +1,24 @@
+import { TTipePelajar } from '@/hooks/useCredential'
 import { getDataPengembalian } from '@/service/data/pengembalian'
 import {
   countAnggota,
   countBukuBelumDikembalikan,
   countBukuDikembalikan,
 } from '@/service/data/statistic'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
+    const tipePelajar = request.nextUrl.searchParams.get('tipePelajar')
+
     const json = {
-      anggota: await countAnggota(),
-      bukuDikembalikan: await countBukuDikembalikan(),
-      bukuBelumDikembalikan: await countBukuBelumDikembalikan(),
+      anggota: await countAnggota(tipePelajar as TTipePelajar),
+      bukuDikembalikan: await countBukuDikembalikan(
+        tipePelajar as TTipePelajar,
+      ),
+      bukuBelumDikembalikan: await countBukuBelumDikembalikan(
+        tipePelajar as TTipePelajar,
+      ),
       denda: 0,
     }
 

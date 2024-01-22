@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   try {
     const { idBuku, data } = await request.json()
-    console.log({ idBuku, data })
+    // console.log({ idBuku, data })
 
     const response = await ubahBuku(idBuku, data)
 

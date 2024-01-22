@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
   try {
     const json = await request.json()
-    console.log({ json })
+    // console.log({ json })
 
     const response = await postUpdateStatus(json.idPeminjaman)
 
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     })
-  } catch (error:any) {
+  } catch (error) {
     if (error.code === 'P2002') {
       let error_response = {
         status: 'fail',

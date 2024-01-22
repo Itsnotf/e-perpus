@@ -15,11 +15,11 @@ export const getCredential = async (email: string) => {
     const querySnapshot = await getDocs(q)
     querySnapshot.forEach((doc) => {
       const data = doc.data()
-      console.log({ data })
+      // console.log({ data })
       response = data
     })
 
-    console.log({ response })
+    // console.log({ response })
 
     return response
   } catch (error) {

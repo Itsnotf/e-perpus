@@ -41,9 +41,7 @@ const useInitStates = ({
         fetch('/api/anggota/read/all?tipePelajar=' + tipePelajar).then((res) =>
           res.json(),
         ),
-        fetch('/api/buku/read/all?tipePelajar=' + tipePelajar).then((res) =>
-          res.json(),
-        ),
+        fetch('/api/buku/read/all').then((res) => res.json()),
         fetch('/api/peminjaman?tipePelajar=' + tipePelajar).then((res) =>
           res.json(),
         ),

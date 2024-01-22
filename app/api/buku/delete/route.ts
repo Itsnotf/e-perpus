@@ -6,7 +6,7 @@ export async function DELETE(request: Request) {
     const { idBuku } = await request.json()
 
     const response = await hapusBuku(idBuku)
-    console.log({ idBuku })
+    // console.log({ idBuku })
 
     let json_response = {
       status: 'success',

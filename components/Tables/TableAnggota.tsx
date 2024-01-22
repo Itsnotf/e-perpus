@@ -2,7 +2,6 @@
 import { Package } from '@/types/package'
 import { useState, useEffect, useRef, ChangeEvent } from 'react'
 import axios from 'axios'
-import { PeminjamanBody } from '@/types/request'
 import usePengembalianState from '@/hooks/usePengembalianState'
 import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
 import useStatisticState from '@/hooks/useStatisticState'
@@ -14,14 +13,16 @@ import { HiOutlineDotsVertical } from 'react-icons/hi'
 import { TAnggota } from '@/types/anggota'
 import CostumeDropdown from '../Dropdowns/CostumeDropdown'
 import DropdownDefault from '../Dropdowns/DropdownDefault'
+import useCredential from '@/hooks/useCredential'
 
 const TableAnggota = () => {
   // State
   const [open, setOpen] = useState(false)
   const [isEdit, setIsEdit] = useState<'edit' | 'create'>('create')
+  const { tipePelajar } = useCredential()
   const anggotaState = useAnggotaState()
 
-  console.log({ anggotaState: anggotaState.data })
+  // console.log({ anggotaState: anggotaState.data })
 
   // const pengembalianState = usePengembalianState()
   // const statisticState = useStatisticState()
@@ -34,6 +35,7 @@ const TableAnggota = () => {
     kategoriKelas: 'IPA',
     hp: '',
     tahunMasuk: new Date(),
+    tipePelajar,
   })
 
   // handler
@@ -47,7 +49,7 @@ const TableAnggota = () => {
 
   const handleDelete = async (packageItem: TAnggota) => {
     try {
-      console.log({ packageItem })
+      // console.log({ packageItem })
 
       if (!confirm('Apakah anda yakin mau menghapus data anggota ini?')) return
 
@@ -66,7 +68,7 @@ const TableAnggota = () => {
 
       // location.reload()
 
-      console.log(response.data)
+      // console.log(response.data)
       console.log('Data success deleted')
     } catch (error) {
       if (error instanceof Error) {
@@ -82,6 +84,7 @@ const TableAnggota = () => {
         // Send data to Next.js API route
         const response = await axios.post('/api/anggota/create', {
           ...input,
+          kategoriKelas: tipePelajar === 'SMA' ? input.kategoriKelas : 'SMP',
           idAnggota: undefined,
         })
 
@@ -103,7 +106,7 @@ const TableAnggota = () => {
     if (isEdit === 'edit') {
       try {
         // Send data to Next.js API route
-        console.log({ input })
+        // console.log({ input })
 
         const response = await axios.post('/api/anggota/update', {
           idAnggota: input.idAnggota,
@@ -115,7 +118,7 @@ const TableAnggota = () => {
           anggota.idAnggota === input.idAnggota ? input : anggota,
         )
 
-        console.log({ updatedData })
+        // console.log({ updatedData })
 
         anggotaState.setData(updatedData)
         // pengembalianState.addData(formData)
@@ -150,6 +153,7 @@ const TableAnggota = () => {
                 nama: '',
                 nis: '',
                 tahunMasuk: new Date(),
+                tipePelajar,
               })
               setIsEdit('create')
               handleOpen()
@@ -365,7 +369,10 @@ const TableAnggota = () => {
                       />
                     }
                   >
-                    {['10', '11', '12'].map((kelas, index) => (
+                    {(tipePelajar === 'SMA'
+                      ? ['X', 'XI', 'XII']
+                      : ['VII', 'VIII', 'IX']
+                    ).map((kelas, index) => (
                       <Button
                         key={index}
                         className="w-full"
@@ -382,37 +389,39 @@ const TableAnggota = () => {
                   </CostumeDropdown>
                 </div>
 
-                <div>
-                  <label className="mb-3 block text-black dark:text-white">
-                    Kategori Kelas
-                  </label>
-                  <CostumeDropdown
-                    trigger={
-                      <input
-                        readOnly
-                        value={input.kategoriKelas}
-                        type="text"
-                        placeholder="Jurusan"
-                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                      />
-                    }
-                  >
-                    {['IPA', 'IPS'].map((kategoriKelas, index) => (
-                      <Button
-                        key={index}
-                        className="w-full"
-                        onClick={() => {
-                          setInput((prev) => ({
-                            ...prev,
-                            kategoriKelas: kategoriKelas as 'IPA' | 'IPS',
-                          }))
-                        }}
-                      >
-                        {kategoriKelas}
-                      </Button>
-                    ))}
-                  </CostumeDropdown>
-                </div>
+                {tipePelajar === 'SMA' && (
+                  <div>
+                    <label className="mb-3 block text-black dark:text-white">
+                      Kategori Kelas
+                    </label>
+                    <CostumeDropdown
+                      trigger={
+                        <input
+                          readOnly
+                          value={input.kategoriKelas}
+                          type="text"
+                          placeholder="Jurusan"
+                          className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                        />
+                      }
+                    >
+                      {['IPA', 'IPS'].map((kategoriKelas, index) => (
+                        <Button
+                          key={index}
+                          className="w-full"
+                          onClick={() => {
+                            setInput((prev) => ({
+                              ...prev,
+                              kategoriKelas: kategoriKelas as 'IPA' | 'IPS',
+                            }))
+                          }}
+                        >
+                          {kategoriKelas}
+                        </Button>
+                      ))}
+                    </CostumeDropdown>
+                  </div>
+                )}
 
                 <div>
                   <label className="mb-3 block text-black dark:text-white">

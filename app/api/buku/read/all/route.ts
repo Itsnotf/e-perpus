@@ -3,16 +3,16 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const tipePelajar = request.nextUrl.searchParams.get('tipePelajar')
+    // const tipePelajar = request.nextUrl.searchParams.get('tipePelajar')
 
     const json = await getDataBukuAll()
 
-    const jsonFiltered = json.filter(
-      (item: any) => item?.tipePelajar === tipePelajar,
-    )
+    // const jsonFiltered = json.filter(
+    //   (item: any) => item?.tipePelajar === tipePelajar,
+    // )
     let json_response = {
       status: 'success',
-      data: jsonFiltered,
+      data: json,
     }
     return new NextResponse(JSON.stringify(json_response), {
       status: 201,

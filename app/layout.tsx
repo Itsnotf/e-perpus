@@ -53,13 +53,13 @@ export default function RootLayout({
       pengembalianState,
       statisticState,
     })
-  }, [])
+  }, [tipePelajar])
 
   useEffect(() => {
     statisticState.addDenda(hitungDenda(peminjamanState, statisticState))
   }, [peminjamanState])
 
-  console.log({ tipePelajar })
+  // console.log({ tipePelajar })
 
   // auth
   useEffect(() => {

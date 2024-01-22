@@ -20,7 +20,7 @@ export const countAnggotaByKategoriKelas = async (
     // Count the number of documents
     const count = querySnapshot.size
 
-    console.log({ count, kelas, kategoriKelas })
+    // console.log({ count, kelas, kategoriKelas })
 
     return count
   } catch (error) {

@@ -75,7 +75,7 @@ const TableThree = () => {
 
       // location.reload()
 
-      console.log(response.data)
+      // console.log(response.data)
       console.log('Data success deleted')
     } catch (error) {
       if (error instanceof Error) console.error('Error:', error?.message)
@@ -110,11 +110,11 @@ const TableThree = () => {
         tanggalPengembalian: new Date(inputRefs.current.tanggalPengembalian),
       }
 
-      console.log({ input: formData })
+      // console.log({ input: formData })
 
       // Send data to Next.js API route
       const response = await axios.post('/api/peminjaman', formData)
-      console.log({ response })
+      // console.log({ response })
 
       // update state
       peminjamanState.addData(response.data as TResponseGetPeminjaman)

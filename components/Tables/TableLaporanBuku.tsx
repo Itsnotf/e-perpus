@@ -1,21 +1,7 @@
 'use client'
-import { Package } from '@/types/package'
-import { useState, useEffect, useRef, ChangeEvent } from 'react'
-import axios from 'axios'
-import usePengembalianState from '@/hooks/usePengembalianState'
-import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
-import useStatisticState from '@/hooks/useStatisticState'
-import useInitStates from '@/hooks/useInitStates'
-import { hitungDenda } from '@/utils/hitungDenda'
+import { useState, useEffect } from 'react'
 import useBukuState from '@/hooks/useBukuState'
-import { TBuku } from '@/types/buku'
-import { Dropdown } from 'flowbite-react'
-import { HiOutlineDotsVertical } from 'react-icons/hi'
-import {
-  LaporanAtribut,
-  TLaporanBuku,
-  TLaporanPengunjungByKelas,
-} from '@/types/laporan'
+import { LaporanAtribut, TLaporanBuku } from '@/types/laporan'
 import { filterLaporanBuku } from '@/utils/filter'
 
 const TableLaporanBuku = () => {
@@ -44,7 +30,7 @@ const TableLaporanBuku = () => {
     'Rusak B',
     'Hilang',
     'Jumlah Sekarang',
-    'Keterangan',
+    // 'Keterangan',
   ]
 
   const generateBookRows = (
@@ -59,7 +45,7 @@ const TableLaporanBuku = () => {
         bookData.rusakB.toString(),
         bookData.hilang.toString(),
         bookData.jumlahSekarang.toString(),
-        '-',
+        // '-',
       )
     } else {
       // If bookData is undefined, add placeholders or handle accordingly

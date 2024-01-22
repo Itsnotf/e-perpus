@@ -17,16 +17,19 @@ import useCredential from '@/hooks/useCredential'
 const TableLaporanPeminjaman = () => {
   // State
   const [dataLaporan, setDataLaporan] = useState<TLaporanPengunjungByKelas>()
+  const { tipePelajar } = useCredential()
 
   //   initial data
   useEffect(() => {
-    axios.get('/api/laporan').then((dataLaporanPengunjungByKelas: any) => {
-      setDataLaporan(
-        dataLaporanPengunjungByKelas?.data?.data as TLaporanPengunjungByKelas,
-      )
-    })
+    axios
+      .get('/api/laporan?tipePelajar=' + tipePelajar)
+      .then((dataLaporanPengunjungByKelas: any) => {
+        setDataLaporan(
+          dataLaporanPengunjungByKelas?.data?.data as TLaporanPengunjungByKelas,
+        )
+      })
   }, [])
-  console.log({ dataLaporan })
+  // console.log({ dataLaporan })
 
   return (
     <>
@@ -106,13 +109,24 @@ const TableLaporanPeminjaman = () => {
   )
 }
 
-interface MonthlyData {
+interface MonthlyDataSMA {
   [key: string]: {
     [tingkat: string]: number
   }
 }
-const DataTable = ({ month, data }: { month: string; data: MonthlyData }) => {
+
+interface MonthlyDataSMP {
+  [tingkat: string]: number
+}
+const DataTable = ({
+  month,
+  data,
+}: {
+  month: string
+  data: MonthlyDataSMA | MonthlyDataSMP | any
+}) => {
   const { tipePelajar } = useCredential()
+  const countTotal = useRef(0)
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -140,9 +154,12 @@ const DataTable = ({ month, data }: { month: string; data: MonthlyData }) => {
             </tr>
           </thead>
           <tbody>
-            {data &&
+            {tipePelajar === 'SMA' &&
+              data &&
               Object.keys(data).map((kelas, key1) =>
                 Object.keys(data[kelas]).map((tingkat, key2) => {
+                  countTotal.current = countTotal.current +=
+                    data[kelas][tingkat]
                   return (
                     <tr key={`${kelas}-${tingkat}`}>
                       <td className="border-b border-[#eee] py-3 px-4 pl-9 dark:border-strokedark xl:pl-11">
@@ -165,6 +182,48 @@ const DataTable = ({ month, data }: { month: string; data: MonthlyData }) => {
                   )
                 }),
               )}
+
+            {tipePelajar === 'SMP' &&
+              data &&
+              Object.keys(data).map((kelas, key) => {
+                // console.log({ data: data[kelas] })
+                countTotal.current = countTotal.current + data[kelas]
+                return (
+                  <tr key={`${key}`}>
+                    <td className="border-b border-[#eee] py-3 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                      <h5 className="font-medium text-black dark:text-white">
+                        {key + 1}
+                      </h5>
+                    </td>
+                    <td className="border-b border-[#eee] py-3 px-4 dark:border-strokedark">
+                      <p className="text-black dark:text-white">
+                        Kelas {kelas}
+                      </p>
+                    </td>
+                    <td className="border-b border-[#eee] py-3 px-4 dark:border-strokedark">
+                      <p className="text-black dark:text-white">
+                        {data[kelas] as number}
+                      </p>
+                    </td>
+                  </tr>
+                )
+              })}
+
+            <tr>
+              <td className="border-b border-[#eee] py-3 px-4 pl-9 dark:border-strokedark xl:pl-11">
+                <h5 className="font-medium text-black dark:text-white">
+                  Total
+                </h5>
+              </td>
+              <td className="border-b border-[#eee] py-3 px-4 dark:border-strokedark">
+                <p className="text-black dark:text-white"></p>
+              </td>
+              <td className="border-b border-[#eee] py-3 px-4 dark:border-strokedark">
+                <p className="text-black dark:text-white">
+                  {countTotal.current}
+                </p>
+              </td>
+            </tr>
           </tbody>
         </table>
       </div>

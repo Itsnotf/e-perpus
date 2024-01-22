@@ -1,6 +1,12 @@
 'use client'
 import { Package } from '@/types/package'
-import { useState, useEffect, useRef, ChangeEvent } from 'react'
+import {
+  useState,
+  useEffect,
+  useRef,
+  ChangeEvent,
+  MouseEventHandler,
+} from 'react'
 import axios from 'axios'
 import usePengembalianState from '@/hooks/usePengembalianState'
 import { calculateDateDifference } from '@/utils/hitungJarakTanggal'
@@ -9,14 +15,17 @@ import useInitStates from '@/hooks/useInitStates'
 import { hitungDenda } from '@/utils/hitungDenda'
 import useBukuState from '@/hooks/useBukuState'
 import { TBuku } from '@/types/buku'
-import { Dropdown } from 'flowbite-react'
+import { Button, Dropdown } from 'flowbite-react'
 import { HiOutlineDotsVertical } from 'react-icons/hi'
+import useCredential from '@/hooks/useCredential'
+import CostumeDropdown from '../Dropdowns/CostumeDropdown'
 
 const TableBuku = () => {
   // State
   const [open, setOpen] = useState(false)
   const [isEdit, setIsEdit] = useState<'edit' | 'create'>('create')
   const bukuState = useBukuState()
+  const { tipePelajar } = useCredential()
   // const pengembalianState = usePengembalianState()
   // const statisticState = useStatisticState()
 
@@ -31,6 +40,7 @@ const TableBuku = () => {
     keterangan: '',
     kodeBuku: '',
     tahunMasuk: new Date(),
+    tipePelajar: tipePelajar,
   })
 
   // handler
@@ -44,7 +54,7 @@ const TableBuku = () => {
 
   const handleDelete = async (packageItem: TBuku) => {
     try {
-      console.log({ packageItem })
+      // console.log({ packageItem })
 
       if (!confirm('Apakah anda yakin mau menghapus data buku ini?')) return
 
@@ -63,7 +73,7 @@ const TableBuku = () => {
 
       // location.reload()
 
-      console.log(response.data)
+      // console.log(response.data)
       console.log('Data success deleted')
     } catch (error) {
       if (error instanceof Error) {
@@ -100,7 +110,7 @@ const TableBuku = () => {
     if (isEdit === 'edit') {
       try {
         // Send data to Next.js API route
-        console.log({ input })
+        // console.log({ input })
 
         const response = await axios.post('/api/buku/update', {
           idBuku: input.idBuku,
@@ -112,7 +122,7 @@ const TableBuku = () => {
           buku.idBuku === input.idBuku ? input : buku,
         )
 
-        console.log({ updatedData })
+        // console.log({ updatedData })
 
         bukuState.setData(updatedData)
         // pengembalianState.addData(formData)
@@ -129,6 +139,22 @@ const TableBuku = () => {
     }
     handleClose()
   }
+
+  useEffect(() => {
+    const filteredBukuState = bukuState.data.filter(
+      (item) => item.tipePelajar === tipePelajar,
+    )
+    bukuState.setData(filteredBukuState)
+  }, [])
+
+  const listJenisBuku = [
+    { text: 'Kumpulan Soal', code: 'kumpulanSoal' },
+    { text: 'Buku Pelajaran', code: 'bukuPelajaran' },
+    { text: 'Buku Paket', code: 'bukuPaket' },
+    { text: 'Novel/Cerpen', code: 'novelCerpen' },
+    { text: 'Majalah', code: 'majalah' },
+    { text: 'Koran SMA', code: 'koranSMA' },
+  ]
 
   return (
     <div className="rounded-sm border border-stroke bg-white px-5 pt-6 pb-2.5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:pb-1">
@@ -393,18 +419,36 @@ const TableBuku = () => {
                   <label className="mb-3 block text-black dark:text-white">
                     Jenis Buku
                   </label>
-                  <input
-                    value={input.jenisBuku}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                      setInput((prev) => ({
-                        ...prev,
-                        jenisBuku: e.target.value,
-                      }))
-                    }}
-                    type="text"
-                    placeholder="Jenis Buku"
-                    className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                  />
+                  <CostumeDropdown
+                    trigger={
+                      <input
+                        readOnly
+                        value={
+                          listJenisBuku.find(
+                            (item) => item.code === input.jenisBuku,
+                          )?.text || ''
+                        }
+                        type="text"
+                        placeholder="Jenis Buku"
+                        className="w-full rounded-lg border-[1.5px] border-stroke bg-transparent py-3 px-5 font-medium outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      />
+                    }
+                  >
+                    {listJenisBuku.map((jenisBuku, index) => (
+                      <Button
+                        key={index}
+                        className="w-full"
+                        onClick={() => {
+                          setInput((prev) => ({
+                            ...prev,
+                            jenisBuku: jenisBuku.code,
+                          }))
+                        }}
+                      >
+                        {jenisBuku.text}
+                      </Button>
+                    ))}
+                  </CostumeDropdown>
                 </div>
 
                 <div>

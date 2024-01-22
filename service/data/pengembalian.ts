@@ -97,6 +97,7 @@ export async function addPengembalian(json: TRequestPeminjaman) {
 
   const dataPengembalian: TRequestPengembalian = {
     idPeminjaman: peminjamanDoc.id,
+    tipePelajar: json.tipePelajar,
     denda: 0,
     status: 'belum',
     tanggalPengembalian: json.tanggalPengembalian,

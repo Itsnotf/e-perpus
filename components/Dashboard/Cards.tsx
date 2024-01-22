@@ -6,7 +6,7 @@ import useStatisticState from '@/hooks/useStatisticState'
 const Cards = () => {
   const statisticState = useStatisticState()
 
-  console.log({ statisticState })
+  // console.log({ statisticState })
 
   return (
     <>
@@ -15,7 +15,7 @@ const Cards = () => {
         total={(
           statisticState.jumlahBukuDikembalikan +
           statisticState.jumlahBukuBelumDikembalikan
-        ).toString()}
+        )?.toString()}
         rate="0"
         levelUp
       >
@@ -39,7 +39,7 @@ const Cards = () => {
       </CardDataStats>
       <CardDataStats
         title="Total Buku Dikembalikan"
-        total={statisticState.jumlahBukuDikembalikan.toString()}
+        total={statisticState.jumlahBukuDikembalikan?.toString()}
         rate="4.35%"
         levelUp
       >
@@ -67,7 +67,7 @@ const Cards = () => {
       </CardDataStats>
       <CardDataStats
         title="Total Buku Belum Dikembalikan"
-        total={statisticState.jumlahBukuBelumDikembalikan.toString()}
+        total={statisticState.jumlahBukuBelumDikembalikan?.toString()}
         rate="2.59%"
         levelUp
       >
@@ -91,7 +91,7 @@ const Cards = () => {
       </CardDataStats>
       <CardDataStats
         title="Total Denda"
-        total={statisticState.denda.toString()}
+        total={statisticState.denda?.toString()}
         rate="0.95%"
         levelDown
       >

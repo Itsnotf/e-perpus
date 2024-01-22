@@ -3,17 +3,20 @@ import {
   getDataAnggotaAll,
   tambahAnggota,
 } from '@/service/data/anggota'
+import { TAnggota } from '@/types/anggota'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
     const tipePelajar = request.nextUrl.searchParams.get('tipePelajar')
 
-    const json = await getDataAnggotaAll()
+    const json: TAnggota[] = await getDataAnggotaAll()
 
     const jsonFiltered = json.filter(
-      (item: any) => item?.tipePelajar === tipePelajar,
+      (item) => item?.tipePelajar === tipePelajar,
     )
+
+    // console.log({ jsonFiltered })
 
     let json_response = {
       status: 'success',

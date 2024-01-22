@@ -5,6 +5,6 @@ export interface TAnggota {
   tipePelajar: 'SMA' | 'SMP' | 'Referensi'
   hp: string
   kelas: string
-  kategoriKelas: 'IPA' | 'IPS'
+  kategoriKelas: 'IPA' | 'IPS' | 'SMP'
   tahunMasuk: Date
 }

@@ -33,7 +33,7 @@ export async function getDataPeminjaman() {
     })
 
     const response = await Promise.all(responsePromises)
-    console.log({ response })
+    // console.log({ response })
 
     return response
   } catch (error) {

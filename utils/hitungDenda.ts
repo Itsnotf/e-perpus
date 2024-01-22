@@ -9,7 +9,7 @@ export const hitungDenda = (
   statisticState.resetDenda()
 
   let denda = 0
-  peminjamanState.data.map((item) => {
+  peminjamanState?.data?.map((item) => {
     if (new Date() > new Date(item.tanggalPengembalian)) {
       const jarakTanggalPengembalian = calculateDateDifference(
         new Date(item.tanggalPengembalian),
