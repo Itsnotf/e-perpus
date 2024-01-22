@@ -247,31 +247,6 @@ const TableBuku = () => {
                       {bookItem.jumlahHilang}
                     </p>
                   </td>
-                  {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white">
-                      {bookItem.keterangan}
-                    </p>
-                  </td>
-                  <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                    <p className="text-black dark:text-white">
-                      {new Date(bookItem.tahunMasuk).toLocaleDateString(
-                        'id-ID',
-                      )}
-                    </p>
-                  </td> */}
-                  {/* <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
-                  <p
-                    className={`inline-flex rounded-full bg-opacity-10 py-1 px-3 text-sm font-medium ${
-                      packageItem.status === "Selesai"
-                        ? "text-success bg-success"
-                        : packageItem.status === "Belum"
-                        ? "text-danger bg-danger"
-                        : "text-warning bg-warning"
-                    }`}
-                  >
-                    {packageItem.status}
-                  </p>
-                </td> */}
                   <td className="border-b border-[#eee] py-5 px-4 dark:border-strokedark">
                     <Dropdown
                       label={
