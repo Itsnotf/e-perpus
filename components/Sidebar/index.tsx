@@ -241,7 +241,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 <Link
                   href="/buku"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                    pathname.includes('buku') && 'bg-graydark dark:bg-meta-4'
+                    pathname === '/buku' && 'bg-graydark dark:bg-meta-4'
                   }`}
                 >
                   <svg
@@ -294,10 +294,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   return (
                     <React.Fragment>
                       <Link
-                        href="/"
+                        href="/laporan/lpeminjaman"
                         className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
-                          (pathname === '/' ||
-                            pathname.includes('dashboard')) &&
+                          pathname.includes('laporan') &&
                           'bg-graydark dark:bg-meta-4'
                         }`}
                       >
@@ -338,9 +337,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <Link
                               href="/laporan/lpeminjaman"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname.includes('laporan/lpeminjaman') &&
-                                'bg-graydark dark:bg-meta-4'
-                              }`}
+                                pathname === '/laporan/lpeminjaman' &&
+                                'text-white'
+                              } `}
                             >
                               Laporan Peminjaman
                             </Link>
@@ -349,9 +348,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                             <Link
                               href="/laporan/lbuku"
                               className={`group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white ${
-                                pathname.includes('laporan/lbuku') &&
-                                'bg-graydark dark:bg-meta-4'
-                              }`}
+                                pathname === '/laporan/lbuku' && 'text-white'
+                              } `}
                             >
                               Laporan Buku
                             </Link>
